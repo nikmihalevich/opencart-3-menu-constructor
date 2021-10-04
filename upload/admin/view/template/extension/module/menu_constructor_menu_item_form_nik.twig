@@ -1,4 +1,254 @@
-{{ header }}{{ column_left }}
+{{ header }}
+<style>
+  .add-block-field, .select-grid-field {
+    border: 2px dashed #dadada;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  .add-block-field-button, .select-grid-field-inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 50px 0;
+  }
+  .add-block-field-button {
+    cursor: pointer;
+  }
+  .add-block-field-button-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #CF0D64;
+    width: fit-content;
+    border-radius: 50%;
+    color: #fff;
+    margin-bottom: 15px;
+    padding: 13px 14px;
+  }
+  .select-grid-field-inner {
+    width: 100%;
+  }
+  .select-grid-field-inner-header {
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    font-size: 14px;
+  }
+  .select-grid-field-inner-content {
+    width: 100%;
+  }
+  .close-select-gid-field {
+    border: none;
+    background: none;
+    position: absolute;
+    font-size: 35px;
+    top: 10%;
+    right: 5%;
+    outline: none;
+  }
+  .gray-bg {
+    background-color: gray;
+    height: 50px;
+    margin: 1px;
+  }
+  .select-grid-field-inner-content-item {
+    width: 100px;
+    display: flex;
+    flex-direction: row;
+    margin: 10px;
+    cursor: pointer;
+  }
+  .select-grid-field-inner-content-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .d-none {
+    display: none;
+  }
+  .flex-dir-col {
+    flex-direction: column;
+  }
+  .w-100 {
+    width: 100%;
+  }
+  .w-66 {
+    width: 66.7%;
+  }
+  .w-50 {
+    width: 50%;
+    float: left;
+  }
+  .w-33 {
+    width: 33.3%;
+    float: left;
+  }
+  .w-25 {
+    width: 25%;
+    float: left;
+  }
+  .w-20 {
+    width: 20%;
+    float: left;
+  }
+  .w-16 {
+    width: 16.6%;
+    float: left;
+  }
+  .w-12 {
+    width: 12%;
+    float: left;
+  }
+  .block-data-row {
+    margin-top: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    /*align-items: center;*/
+    /*padding: 10px;*/
+    position: relative;
+  }
+  .block-data-row-inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  .block-data-buttons {
+    position: absolute;
+    right: 0;
+    top: -40px;
+  }
+  .block-data-inner {
+    text-align: center;
+    border: 2px dashed #dadada;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    margin: 10px;
+  }
+  .block-data-inner span {
+    /*margin: 5px 30px;*/
+    margin-right: 4px;
+  }
+  .add-data-modal-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    border: none;
+  }
+  .mt-10 {
+    margin-top: 10px;
+  }
+  .block-data-table {
+    position: relative;
+  }
+  .block-data-table img {
+    max-width: 100%;
+  }
+  .overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    transition: .3s ease;
+    background-color: black;
+  }
+  .block-data-table:hover .overlay {
+    opacity: 0.5;
+  }
+  .overlay-buttons {
+    opacity: 0;
+    color: white;
+    /*font-size: 100px;*/
+    position: absolute;
+    width: 100%;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    text-align: center;
+    transition: .3s ease;
+  }
+  .block-data-table:hover .overlay-buttons {
+    opacity: 1;
+  }
+  .added-product-image img {
+    height: auto;
+    width: auto;
+    max-width: 100px;
+    max-height: 100px;
+  }
+  .td-products-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .bd-example-modal-lg .img-thumbnail {
+    max-width: 150px;
+  }
+  .bd-example-modal-lg .img-thumbnail img {
+    max-width: 140px;
+  }
+  .grid-view-type-heading {
+    text-align: center;
+    font-weight: bold;
+  }
+  .grid-view-type {
+    display: flex;
+    justify-content: center;
+  }
+  @media (max-width: 768px) {
+    .w-xs {
+      width: 100%;
+    }
+  }
+  .products-grid-view-row {
+    display: flex;
+    justify-content: space-between;
+  }
+  .products-grid-view {
+    width: 220px;
+    height: 220px;
+    border: 1px solid black;
+    padding: 5px;
+    cursor: pointer;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+  }
+  .products-grid-view-icons {
+    width: fit-content;
+    height: fit-content;
+    margin-right: 5px;
+  }
+  .products-grid-view-2 .products-grid-view-icons span {
+    font-size: 8px;
+  }
+  .products-grid-view-3 .products-grid-view-icons span {
+    font-size: 6px;
+  }
+  .menu-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2px 5px;
+    margin: 2px 0;
+  }
+  .menu-items-list {
+    max-height: 500px;
+    overflow-y: auto;
+  }
+</style>
+{{ column_left }}
 <div id="content">
   <div class="page-header">
     <div class="container-fluid">
@@ -44,6 +294,7 @@
                 {% endif %}
               </select>
             </div>
+          </div>
 
           <ul class="nav nav-tabs" id="language">
             {% for language in languages %}
@@ -74,7 +325,523 @@
         </form>
       </div>
     </div>
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div class="form-group">
+          <label class="col-sm-2 control-label" for="input-name">{{ entry_block_content }}</label>
+          <div class="col-sm-12">
+            {% if menu.menu_item_id %}
+              <div class="block-data-rows">
+                {% if block %}
+                  <div class="block-data-row" id="block-data-row-{{ block.id }}" data-block-id="{{ block.id }}">
+                    <div class="block-data-row-inner" style="width: 100%;">
+                      {% if block.grid_id == "1" %}
+                        {% set colCounts = 1 %}
+                      {% elseif block.grid_id == "2" or block.grid_id == "5" or block.grid_id == "6" %}
+                        {% set colCounts = 2 %}
+                      {% elseif block.grid_id == "3" or block.grid_id == "7" or block.grid_id == "8" or block.grid_id == "9" or block.grid_id == "12" %}
+                        {% set colCounts = 3 %}
+                      {% elseif block.grid_id == "4" %}
+                        {% set colCounts = 4 %}
+                      {% elseif block.grid_id == "10" %}
+                        {% set colCounts = 5 %}
+                      {% elseif block.grid_id == "11" %}
+                        {% set colCounts = 6 %}
+                      {% endif %}
+
+                      {% set ignoredCols = [] %}
+
+                      {% for colId in 1..colCounts %}
+                        {% for block_data in block.blocks_data if block_data.col_id == colId %}
+
+                          <div class="{{ block_data.block_grid_width }} block-data-table w-xs" data-col-id="{{ block_data.col_id }}" style="margin: 0 auto;">
+                            <div class="w-100">
+                              {% for content in block_data.contents %}
+                                {% if content.type == 'text' %}
+                                  <div>
+                                    {{ content.value }}
+                                  </div>
+                                {% elseif content.type == 'products' %}
+                                  <div width="auto" style="margin: 0 auto;">
+                                    {% for product in content.value %}
+                                      {% if content.grid_id == 1 %}
+                                        {% if loop.index0 % 2 == 0 %}
+                                          <div class="td-products-container">
+                                        {% endif %}
+                                      {% elseif content.grid_id == 2 %}
+                                        {% if loop.index0 % 3 == 0 %}
+                                          <div class="td-products-container">
+                                        {% endif %}
+                                      {% elseif content.grid_id == 3 %}
+                                        {% if loop.index0 % 4 == 0 %}
+                                          <div class="td-products-container">
+                                        {% endif %}
+                                      {% endif %}
+
+                                      <div data-product-id="{{ product.product_id }}" class="product-layout product-list col-sm-3 col-xs-12" style="margin-left: 15px; margin-top: 15px; padding: 10px; width: fit-content;">
+                                        <div class="added-product-image">
+                                          <img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" />
+                                        </div>
+                                        <div class="caption">
+                                          <p>{{ product.name }}</p>
+                                          <p class="price">{{ product.price}}</p>
+                                        </div>
+                                      </div>
+
+                                      {% if content.grid_id == 1 %}
+                                        {% if loop.index0 + 1 % 2 == 0 %}
+                                          </div>
+                                        {% endif %}
+                                      {% elseif content.grid_id == 2 %}
+                                        {% if loop.index0 + 1 % 3 == 0 %}
+                                          </div>
+                                        {% endif %}
+                                      {% elseif content.grid_id == 3 %}
+                                        {% if loop.index0 + 1 % 4 == 0 %}
+                                          </div>
+                                        {% endif %}
+                                      {% endif %}
+
+                                    {% endfor %}
+                                  </div>
+                                {% endif %}
+                              {% endfor %}
+
+                              <div>
+                                <div class="overlay"></div>
+                                <div class="overlay-buttons">
+                                  <button type="button" data-toggle="modal" data-target="#addBlockDataModal" data-tooltip="tooltip" title="{{ button_edit }}" data-block-data-id="{{ block_data.id }}" class="btn btn-primary edit-block-data-btn"><i class="fa fa-pencil"></i></button>
+                                  <button type="button" data-tooltip="tooltip" title="{{ button_delete }}" data-block-data-id="{{ block_data.id }}" class="btn btn-danger delete-block-data-btn"><i class="fa fa-trash"></i></button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        {% else %}
+                          <div class="block-data-inner">
+                            <button type="button" data-toggle="modal" data-target="#addBlockDataModal" data-tooltip="tooltip" title="{{ button_add }}" data-col-id="{{ colId }}" class="btn btn-success pull-right add-block-data-btn"><i class="fa fa-plus"></i></button>
+                          </div>
+
+                        {% endfor %}
+
+                      {% endfor %}
+                    </div>
+                    <div class="block-data-buttons">
+{#                      <button type="button" data-toggle="modal" data-target="#settingsBlockModal" data-tooltip="tooltip" title="{{ button_edit }}" data-block-id="{{ block.id }}" class="btn btn-primary edit-block-settings-btn"><i class="fa fa-pencil"></i></button>#}
+                      <button type="button" data-tooltip="tooltip" title="{{ button_delete }}" data-block-id="{{ block.id }}" class="btn btn-danger delete-block-btn"><i class="fa fa-trash"></i></button>
+                    </div>
+
+                  </div>
+                {% endif %}
+              </div>
+              {% if not block %}
+                <div class="add-block-field mt-10">
+                  <div class="add-block-field-button">
+                    <div class="add-block-field-button-icon">
+                      <i class="fa fa-plus"></i>
+                    </div>
+                    <div class="add-block-field-button-text">{{ button_add_menu_block }}</div>
+                  </div>
+                </div>
+                <div class="select-grid-field d-none">
+                  <div class="select-grid-field-inner">
+                    <div class="select-grid-field-inner-header">
+                      {{ text_select_structure }}
+                    </div>
+                    <div class="select-grid-field-inner-content">
+                      <div class="select-grid-field-inner-content-row">
+                        <div class="select-grid-field-inner-content-item" data-grid-id="1">
+                          <div class="gray-bg w-100"></div>
+                        </div>
+                        <div class="select-grid-field-inner-content-item" data-grid-id="2">
+                          <div class="gray-bg w-50"></div>
+                          <div class="gray-bg w-50"></div>
+                        </div>
+                        <div class="select-grid-field-inner-content-item" data-grid-id="3">
+                          <div class="gray-bg w-33"></div>
+                          <div class="gray-bg w-33"></div>
+                          <div class="gray-bg w-33"></div>
+                        </div>
+                        <div class="select-grid-field-inner-content-item" data-grid-id="4">
+                          <div class="gray-bg w-25"></div>
+                          <div class="gray-bg w-25"></div>
+                          <div class="gray-bg w-25"></div>
+                          <div class="gray-bg w-25"></div>
+                        </div>
+                        <div class="select-grid-field-inner-content-item" data-grid-id="5">
+                          <div class="gray-bg w-33"></div>
+                          <div class="gray-bg w-66"></div>
+                        </div>
+                        <div class="select-grid-field-inner-content-item" data-grid-id="6">
+                          <div class="gray-bg w-66"></div>
+                          <div class="gray-bg w-33"></div>
+                        </div>
+                      </div>
+                      <div class="select-grid-field-inner-content-row">
+                        <div class="select-grid-field-inner-content-item" data-grid-id="7">
+                          <div class="gray-bg w-25"></div>
+                          <div class="gray-bg w-25"></div>
+                          <div class="gray-bg w-50"></div>
+                        </div>
+                        <div class="select-grid-field-inner-content-item" data-grid-id="8">
+                          <div class="gray-bg w-50"></div>
+                          <div class="gray-bg w-25"></div>
+                          <div class="gray-bg w-25"></div>
+                        </div>
+                        <div class="select-grid-field-inner-content-item" data-grid-id="9">
+                          <div class="gray-bg w-25"></div>
+                          <div class="gray-bg w-50"></div>
+                          <div class="gray-bg w-25"></div>
+                        </div>
+                        <div class="select-grid-field-inner-content-item" data-grid-id="10">
+                          <div class="gray-bg w-20"></div>
+                          <div class="gray-bg w-20"></div>
+                          <div class="gray-bg w-20"></div>
+                          <div class="gray-bg w-20"></div>
+                          <div class="gray-bg w-20"></div>
+                        </div>
+                        <div class="select-grid-field-inner-content-item" data-grid-id="11">
+                          <div class="gray-bg w-16"></div>
+                          <div class="gray-bg w-16"></div>
+                          <div class="gray-bg w-16"></div>
+                          <div class="gray-bg w-16"></div>
+                          <div class="gray-bg w-16"></div>
+                          <div class="gray-bg w-16"></div>
+                        </div>
+                        <div class="select-grid-field-inner-content-item" data-grid-id="12">
+                          <div class="gray-bg w-16"></div>
+                          <div class="gray-bg w-66"></div>
+                          <div class="gray-bg w-16"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <button type="button" class="close-select-gid-field">&times;</button>
+                  </div>
+                </div>
+              {% endif %}
+            {% else %}
+              <div class="text-center">
+                <span>{{ text_create_menu_item }}</span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <div class="modal fade bd-example-modal-lg" id="addBlockDataModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab-text-data" data-toggle="tab">{{ tab_text_data }}</a></li>
+            <li><a href="#tab-products" data-toggle="tab">{{ tab_products }}</a></li>
+            <li><a href="#tab-menu-items" data-toggle="tab">{{ tab_menu_items }}</a></li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active" id="tab-text-data">
+              <div class="col-sm-12">
+                <textarea name="block_data[text]" placeholder="{{ entry_text }}" id="input-block-data-text" data-toggle="summernote" data-lang="{{ summernote }}" class="form-control"></textarea>
+                <label class="pull-left control-label" for="input-block-data-text-ordinal">{{ entry_position_data_in_block }}</label>
+                <input type="text" name="block_data[text_ordinal]" value="" placeholder="{{ entry_position_data_in_block }}" id="input-block-data-text-ordinal" class="form-control"/>
+              </div>
+            </div>
+            <div class="tab-pane" id="tab-products">
+              <div class="col-sm-12">
+
+                <label class="col-sm-2 control-label" for="input-product-categories">{{ entry_products }}</label>
+                <div class="col-sm-10">
+                  <select name="categories" id="input-product-categories" class="form-control">
+
+                    {% for category in categories %}
+
+                      <option value="{{ category.category_id }}">{{ category.name }} {{ category.total_products }}</option>
+
+                    {% endfor %}
+
+                  </select>
+
+                  <div class="row products-list">
+
+                  </div>
+
+                </div>
+                <label class="col-sm-2 control-label" for="input-name">{{ entry_added_products }}</label>
+                <div class="col-sm-10">
+                  <div class="row added-products-list">
+
+                  </div>
+                </div>
+
+              </div>
+              <label class="control-label mt-10" for="input-block-data-products-ordinal">{{ entry_position_data_in_block }}</label>
+              <input type="text" name="block_data[products_ordinal]" value="" placeholder="{{ entry_position_data_in_block }}" id="input-block-data-products-ordinal" class="form-control"/>
+            </div>
+            <div class="tab-pane" id="tab-menu-items">
+              <div class="form-group">
+                <h4>{{ text_list_menu_items }}</h4>
+                <div class="col-sm-12">
+                  <div class="col-sm-6">
+                    <label class="control-label" for="input-menu-items-list">{{ entry_menu_items_list }}</label>
+                    <div class="menu-items-list"> <!-- menu-items-list -->
+                      {% for menu_item in menu_items_list %}
+                        <div class="menu-item">
+                          <span>{{ menu_item.name }}</span>
+                          <input type="hidden" name="menu_items_id[]" value="{{ menu_item.menu_item_id }}">
+                          <button type="button" class="btn btn-default" data-menu-item-id="{{ menu_item.menu_item_id }}" data-menu-item-name="{{ menu_item.name }}"><i class="fa fa-share"></i></button>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <label class="control-label" for="input-added-menu-items-list">{{ entry_added_menu_items_list }}</label>
+                    <div class="added-menu-items-list"> <!-- added-menu-items-list -->
+
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-12 mt-10">
+                  <label class="control-label" for="input-menu-items-ordinal">{{ entry_position_data_in_block }}</label>
+                  <input type="text" name="block_data[menu_items_ordinal]" value="" placeholder="{{ entry_position_data_in_block }}" id="input-menu-items-ordinal" class="form-control"/>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer add-data-modal-footer">
+          <button type="button" class="btn btn-info w-20 mt-10 add-block-data-modal-btn">{{ button_save }}</button>
+          <button type="button" class="btn btn-secondary w-20 mt-10" data-dismiss="modal">{{ button_cancel }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <link href="view/javascript/summernote/summernote.css" rel="stylesheet"/>
+  <script type="text/javascript" src="view/javascript/summernote/summernote.js"></script>
+  <script type="text/javascript" src="view/javascript/summernote/summernote-image-attributes.js"></script>
+  <script type="text/javascript" src="view/javascript/summernote/opencart.js"></script>
+
+  <script>
+      $('.menu-item button').on('click', function () {
+          let menuItemId = $(this).attr('data-menu-item-id')
+          let menuItemName = $(this).attr('data-menu-item-name')
+          let html = '';
+          html =  '<div class="menu-item">\n' +
+              '   <span>' + menuItemName + '</span>\n' +
+              '   <input type="hidden" name="added_menu_items_id[]" value="' + menuItemId + '">\n' +
+              '   <button type="button" class="btn btn-danger"><i class="fa fa-trash"></i></button>\n' +
+              '</div>\n'
+
+          $('.added-menu-items-list .menu-item input[value="' + menuItemId + '"]').parent().remove()
+          $('.added-menu-items-list').append(html)
+      })
+      $('.added-menu-items-list').delegate('.btn-danger', 'click', function() {
+          $(this).parent().remove();
+      });
+  </script>
+
+  <script>
+      $('.block-data-rows').delegate('.delete-block-btn', 'click', function () {
+          let block_id = $(this).attr('data-block-id')
+
+          if (confirm("{{ confirm_delete_block }}")) {
+              $.ajax({
+                  type: "POST",
+                  url: 'index.php?route=extension/module/menu_constructor_nik/deleteBlock&block_id=' + block_id + '&user_token={{ user_token }}',
+                  success: function() {
+                      document.location.href = window.location;
+                  }
+              })
+          }
+      })
+
+      $('.block-data-rows').delegate('.add-block-data-btn', 'click', function () {
+          let block_id = $(this).parents('.block-data-row').attr('data-block-id')
+          let col_id   = $(this).attr('data-col-id')
+          $( ":input[name*='block_data']" ).each(function (i, item) {
+              $(item).val('')
+          })
+          $('#input-block-data-text').summernote("code", '');
+          $("#thumb-image1 img").attr('src', $("#thumb-image1 img").attr('placeholder'))
+          $('.added-products-list').html('')
+          $('.add-block-data-modal-btn').removeAttr('data-block-data-id')
+          $('.add-block-data-modal-btn').attr('data-block-id', block_id)
+          $('.add-block-data-modal-btn').attr('data-col-id', col_id)
+      })
+
+      $('.block-data-rows').delegate('.edit-block-data-btn', 'click', function () {
+          let block_data_id = $(this).attr('data-block-data-id')
+          $('.add-block-data-modal-btn').attr('data-block-data-id', block_data_id)
+          $.ajax({
+              type: "GET",
+              url: 'index.php?route=extension/module/menu_constructor_nik/getBlockData&block_data_id=' + block_data_id + '&user_token={{ user_token }}',
+              success: function(response) {
+                  console.log(response)
+                  $('.add-block-data-modal-btn').attr('data-block-id', response.block_id)
+                  $('.products-grid-view').css('border', '1px solid black')
+                  let keys = Object.keys(response)
+                  for (let i = 0; i < keys.length; i++) {
+                      if(response[keys[i]] !== '0') {
+                          $(":input[name='block_data[" + keys[i] + "]']").val(response[keys[i]])
+                      }
+                      $('#input-block-data-text').summernote("code", response['text']);
+                      if(response['bg_image']) {
+                          $("#thumb-image1 img").attr('src', response['background_image'])
+                      }
+                  }
+                  $('.added-products-list').html(addedProductsToBlockDataHTML(response['products']))
+              }
+          })
+      })
+
+      function addedProductsToBlockDataHTML(products) {
+          let html = '';
+          for (let i = 0; i < products.length; i++) {
+              html += '<div data-product-id="' + products[i]['product_id'] + '" class="product-layout product-list col-sm-3 col-xs-12" style="border: 1px solid #e3e3e3; border-radius: 10px; margin-left: 15px; margin-top: 15px; padding: 10px; width: 15%;">\n' +
+                  '<div class="product-thumb" style="min-height: 250px; display: flex; flex-direction: column; justify-content: space-around;">\n' +
+                  '<div class="image">\n';
+              if(products[i]['image']) {
+                  html += '<img src="/image/' + products[i]['image'] + '" alt="' + products[i]['name'] + '" title="' + products[i]['name'] + '" class="img-responsive" />\n';
+              } else {
+                  html += '<img src="/image/cache/no_image-100x100.png" alt="' + products[i]['name'] + '" title="' + products[i]['name'] + '" class="img-responsive" />\n';
+              }
+              html += '</div>\n' +
+                  '<div>\n' +
+                  '<div class="caption">\n' +
+                  '<p>' + products[i]['name'] + '</p>\n' +
+                  '<p class="price">\n' +
+                  products[i]['price'] +
+                  '</p>\n' +
+                  '<div class="button-group">\n' +
+                  '<button type="button" onclick="deleteProductFromMailing(' + products[i]['product_id'] + ')">\n' +
+                  '{{ button_product_from_menu_item_block }}\n' +
+                  '</button>\n' +
+                  '<input type="hidden" name="added_products_id[]" id="added-product-id" value="' + products[i]['product_id'] + '" />\n' +
+                  '</div>\n' +
+                  '</div>\n' +
+                  '</div>\n' +
+                  '</div>\n' +
+                  '</div>\n'
+          }
+          return html;
+      }
+
+      // Save block data
+      $('.add-block-data-modal-btn').on('click', function () {
+          let block_id = $(this).attr('data-block-id')
+          let block_data_id = $(this).attr('data-block-data-id')
+          let col_id = $(this).attr('data-col-id')
+          let that = $(this)
+          console.log($( "#addBlockDataModal :input" ).serializeArray())
+          if (block_data_id) {
+              $.ajax({
+                  type: "POST",
+                  dataType: 'html',
+                  data: $( "#addBlockDataModal :input" ).serialize(),
+                  url: 'index.php?route=extension/module/menu_constructor_nik/editBlockData&block_data_id=' + block_data_id + '&user_token={{ user_token }}',
+                  success: function (res) {
+                      $('#addBlockDataModal').modal('hide')
+                      that.removeAttr('data-block-id')
+                      that.removeAttr('data-block-data-id')
+                      that.removeAttr('data-col-id')
+                      document.location.href = window.location;
+                  }
+              })
+          } else {
+              $.ajax({
+                  type: "POST",
+                  dataType: 'html',
+                  data: $( "#addBlockDataModal :input" ).serialize(),
+                  url: 'index.php?route=extension/module/menu_constructor_nik/addBlockData&block_id=' + block_id + '&col_id=' + col_id + '&user_token={{ user_token }}',
+                  success: function (res) {
+                      $('#addBlockDataModal').modal('hide')
+                      that.removeAttr('data-block-id')
+                      that.removeAttr('data-block-data-id')
+                      that.removeAttr('data-col-id')
+                      document.location.href = window.location;
+                  }
+              })
+          }
+      })
+
+      $('.select-grid-field-inner-content-item').on('click', function () {
+          let grid_id = $(this).attr('data-grid-id');
+          $.ajax({
+              type: "POST",
+              url: 'index.php?route=extension/module/menu_constructor_nik/addBlock&menu_item_id={{ menu.menu_item_id }}' + '&grid_id=' + grid_id + '&user_token={{ user_token }}',
+              success: function(block_id) {
+                  document.location.href = window.location;
+              }
+          })
+      })
+
+      $('.add-block-field-button').on('click', function () {
+          $('.select-grid-field').show()
+          $('.add-block-field').hide()
+      })
+      $('.close-select-gid-field').on('click', function () {
+          $('.select-grid-field').hide()
+          $('.add-block-field').show()
+      })
+
+
+      function deleteProductFromMailing(product_id) {
+          $('.added-products-list').find("[data-product-id='" + product_id + "']").appendTo(".products-list")
+          $('.products-list').find("[data-product-id='" + product_id + "']").find('.button-group').html(
+              '<button type="button" onclick="addProductToMailing(' + product_id + ')"> {{ button_product_to_menu_item_block }}</button>'
+          )
+      }
+      function addProductToMailing(product_id) {
+          $('.products-list').find("[data-product-id='" + product_id + "']").appendTo(".added-products-list")
+          $('.added-products-list').find("[data-product-id='" + product_id + "']").find('.button-group').html(
+              '<button type="button" onclick="deleteProductFromMailing(' + product_id + ')"> {{ button_product_from_menu_item_block }}</button>' +
+              '<input type="hidden" name="added_products_id[]" id="added-product-id" value="' + product_id + '" />'
+          )
+      }
+      function getProductsByCategoryId() {
+          let category_id = $("#input-product-categories option:selected").val()
+          $.ajax({
+              url: 'index.php?route=extension/module/menu_constructor_nik/getProducts&user_token={{ user_token }}&category_id=' + category_id,
+              dataType: 'json',
+              success: function(products) {
+                  $('.products-list').empty();
+                  products.forEach(function (val, key) {
+                      let product_image = val.thumb ? val.thumb : "/image/cache/no_image-100x100.png"
+                      let isAdded = $('.added-products-list').find("[data-product-id='" + val.product_id + "']").length
+                      if(!isAdded) {
+                          $('.products-list').append(
+                              '<div data-product-id="' + val.product_id + '" class="product-layout product-list col-sm-3 col-xs-12" style="border: 1px solid #e3e3e3; border-radius: 10px; margin-left: 15px; margin-top: 15px; padding: 10px; width: 15%;">' +
+                              '<div class="product-thumb" style="min-height: 250px; display: flex; flex-direction: column; justify-content: space-around;">' +
+                              '<div class="image"><img src="' + product_image + '" alt="' + val.name + '" title="' + val.name + '" class="img-responsive" /></div>' +
+                              '<div>' +
+                              '<div class="caption">' +
+                              '<p>' + val.name + '</p>' +
+                              '<p class="price">' + val.price + '</p>' +
+                              '<div class="button-group">' +
+                              '<button type="button" onclick="addProductToMailing(' + val.product_id + ')">' +
+                              '{{ button_product_to_menu_item_block }}' +
+                              '</button>' +
+                              '</div>' +
+                              '</div>' +
+                              '</div>' +
+                              '</div>' +
+                              '</div>' +
+                              '</div>'
+                          )
+                      }
+                  })
+              },
+              error: function(xhr, ajaxOptions, thrownError) {
+                  alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+              }
+          });
+      }
+
+      $(document).ready(function() {
+          getProductsByCategoryId()
+          $('#input-product-categories').on('change', getProductsByCategoryId)
+      })
+  </script>
   <script type="text/javascript"><!--
     $('#language a:first').tab('show');
     //--></script></div>

@@ -105,59 +105,6 @@
               </tbody>
             </table>
           </div>
-          {% if addMenuBlock %}
-            <div class="add-material-container">
-              <a href="{{ addMenuBlock }}" data-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary add-material-btn">{{ button_add_menu_block }}</a>
-            </div>
-          {% endif %}
-          <div class="table-responsive">
-            <table class="table table-bordered table-hover">
-              <thead>
-              <tr>
-                <td class="text-left">
-                  {% if sort == 'had.title' %}
-                    <a href="{{ sort_article_title }}" class="{{ order|lower }}">{{ column_name_menu_item_block }}</a>
-                  {% else %}
-                    <a href="{{ sort_article_title }}">{{ column_name_menu_item_block }}</a>
-                  {% endif %}
-                </td>
-                <td class="text-left">
-                  {% if sort == 'had.title' %}
-                    <a href="{{ sort_article_title }}" class="{{ order|lower }}">{{ column_name_menu_item }}</a>
-                  {% else %}
-                    <a href="{{ sort_article_title }}">{{ column_name_menu_item }}</a>
-                  {% endif %}
-                </td>
-                <td class="text-right">
-                  {% if sort == 'ha.sort_order' %}
-                    <a href="{{ sort_article_sort_order }}" class="{{ order|lower }}">{{ column_sort_order }}</a>
-                  {% else %}
-                    <a href="{{ sort_article_sort_order }}">{{ column_sort_order }}</a>
-                  {% endif %}
-                </td>
-                <td class="text-right">{{ column_action }}</td>
-              </tr>
-              </thead>
-              <tbody>
-              {% if help_articles %}
-                {% for help_article in help_articles %}
-                  <tr>
-                    <td class="text-left">{{ help_article.title }}</td>
-                    <td class="text-right">{{ help_article.sort_order }}</td>
-                    <td class="text-right">
-                      <a href="{{ help_article.edit }}" data-toggle="tooltip" title="{{ button_edit }}" class="btn btn-primary"><i class="fa fa-pencil"></i></a>
-                      <span onclick="confirm('{{ confirm_delete_help_article }}') ? location = '{{ help_article.delete }}' : false;" data-toggle="tooltip" title="{{ button_delete }}" class="btn btn-danger"><i class="fa fa-trash-o"></i></span>
-                    </td>
-                  </tr>
-                {% endfor %}
-              {% else %}
-                <tr>
-                  <td class="text-center" colspan="4">{{ text_no_results }}</td>
-                </tr>
-              {% endif %}
-              </tbody>
-            </table>
-          </div>
         </div>
       </div>
     </form>
