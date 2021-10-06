@@ -226,6 +226,11 @@ class ControllerExtensionModuleMenuConstructorNik extends Controller {
             $order = 'ASC';
         }
 
+        if (isset($this->request->get['filter_name'])) {
+            $filter_name = $this->request->get['filter_name'];
+        } else {
+            $filter_name = '';
+        }
 
         if (isset($this->error['warning'])) {
             $data['error_warning'] = $this->error['warning'];
@@ -279,8 +284,9 @@ class ControllerExtensionModuleMenuConstructorNik extends Controller {
         }
 
         $filter_data = array(
-            'sort'  => $sort,
-            'order' => $order,
+            'sort'        => $sort,
+            'order'       => $order,
+            'filter_name' => $filter_name
         );
 
         $results = $this->model_extension_module_menu_constructor_nik->getMenuItems($filter_data);
@@ -294,6 +300,8 @@ class ControllerExtensionModuleMenuConstructorNik extends Controller {
                 'delete'          => $this->url->link('extension/module/menu_constructor_nik/deleteMenuItem', 'user_token=' . $this->session->data['user_token'] . '&menu_item_id=' . $result['menu_item_id'], true)
             );
         }
+
+        $data['filter_name'] = $filter_name;
 
         $data['header'] = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');
@@ -389,12 +397,13 @@ class ControllerExtensionModuleMenuConstructorNik extends Controller {
                         foreach ($block_data['products'] as $product) {
                             $results[] = $this->model_catalog_product->getProduct($product['product_id']);
                         }
+
                         foreach ($results as $kkk => $result) {
                             $results[$kkk]['price'] = $this->currency->format($result['price'], $this->config->get('config_currency'));
                             if ($results[$kkk]['image']) {
-                                $results[$kkk]['thumb'] = $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_category_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_category_height'));
+                                $results[$kkk]['thumb'] = $this->model_tool_image->resize($result['image'], 133, 133);
                             } else {
-                                $results[$kkk]['thumb'] = $this->model_tool_image->resize('no_image.png', 100, 100);
+                                $results[$kkk]['thumb'] = $this->model_tool_image->resize('no_image.png', 133, 133);
                             }
                         }
 
@@ -403,6 +412,21 @@ class ControllerExtensionModuleMenuConstructorNik extends Controller {
                                 'value'   => $results,
                                 'sort'    => $block_data['products_ordinal'],
                                 'type'    => 'products'
+                            );
+                        }
+                    }
+
+                    if (!empty($block_data['menu_items'])) {
+                        $results = array();
+                        foreach ($block_data['menu_items'] as $menu_item) {
+                            $results[] = $this->model_extension_module_menu_constructor_nik->getMenuItemName($menu_item['menu_item_id']);
+                        }
+
+                        if (!empty($results)) {
+                            $contents[] = array(
+                                'value'   => $results,
+                                'sort'    => $block_data['menu_items_ordinal'],
+                                'type'    => 'menu_items'
                             );
                         }
                     }
@@ -436,6 +460,14 @@ class ControllerExtensionModuleMenuConstructorNik extends Controller {
             $data['menu_constructor_nik_description'] = $menu_item_description;
         } else {
             $data['menu_constructor_nik_description'] = array();
+        }
+
+        if (isset($this->request->post['main'])) {
+            $data['main'] = $this->request->post['main'];
+        } elseif (!empty($menu_item_info)) {
+            $data['main'] = $menu_item_info['main'];
+        } else {
+            $data['main'] = 0;
         }
 
         if (isset($this->request->post['sort_order'])) {
@@ -641,6 +673,15 @@ class ControllerExtensionModuleMenuConstructorNik extends Controller {
                 }
 
                 $block_data['products'] = $json;
+            }
+
+            if (isset($block_data['menu_items'])) {
+                $results = array();
+                foreach ($block_data['menu_items'] as $menu_item) {
+                    $results[] = $this->model_extension_module_menu_constructor_nik->getMenuItemName($menu_item['menu_item_id']);
+                }
+
+                $block_data['menu_items'] = $results;
             }
 
             $this->response->addHeader('Content-Type: application/json');

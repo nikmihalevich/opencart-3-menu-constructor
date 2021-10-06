@@ -60,10 +60,26 @@
               </select>
             </div>
           </div>
-          <div class="add-material-container">
-            <a href="{{ changeSettings }}" data-toggle="tooltip" title="{{ button_menu_settings }}" class="btn btn-primary add-material-btn"><i class="fa fa-gear"></i></a>
-            <a href="{{ addMenuItem }}" data-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary add-material-btn">{{ button_add_menu_item }}</a>
+{#          <div class="add-material-container">#}
+{#            <a href="{{ changeSettings }}" data-toggle="tooltip" title="{{ button_menu_settings }}" class="btn btn-primary add-material-btn"><i class="fa fa-gear"></i></a>#}
+{#            <a href="{{ addMenuItem }}" data-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary add-material-btn">{{ button_add_menu_item }}</a>#}
+{#          </div>#}
+          <div class="form-group">
+            <div class="col-sm-5">
+              <input type="text" name="filter_menu_item" value="{{ filter_name }}" placeholder="{{ column_name_menu_item }}" id="input-menu-item" class="form-control"/>
+            </div>
+            <div class="col-sm-2">
+              <span onclick="searchMenuItem()" data-toggle="tooltip" title="{{ button_search }}" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;{{ button_search }}</span>
+              <a href="{{ action }}" data-toggle="tooltip" title="{{ button_reset }}" class="btn btn-danger"><i class="fa fa-refresh"></i>&nbsp;{{ button_clear }}</a>
+            </div>
+            <div class="col-sm-5">
+              <div class="pull-right">
+{#                <a href="{{ changeSettings }}" data-toggle="tooltip" title="{{ button_menu_settings }}" class="btn btn-primary"><i class="fa fa-gear"></i></a>#}
+                <a href="{{ addMenuItem }}" data-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary">{{ button_add_menu_item }}</a>
+              </div>
+            </div>
           </div>
+
           <div class="table-responsive">
             <table class="table table-bordered table-hover">
               <thead>
@@ -109,5 +125,14 @@
       </div>
     </form>
   </div>
+  <script>
+    function searchMenuItem() {
+      let filter_name = $('input[name="filter_menu_item"]').val();
+
+      if (filter_name) {
+          document.location.href = window.location + '&filter_name=' + filter_name;
+      }
+    }
+  </script>
 </div>
 {{ footer }}

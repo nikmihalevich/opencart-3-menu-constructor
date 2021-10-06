@@ -19,8 +19,11 @@ $_['text_list_menu_items']  = 'Список пунктов меню';
 // Entry
 $_['entry_sort_order'] = 'Порядок сортировки';
 $_['entry_status']     = 'Статус';
+$_['entry_main']       = 'Главный пункт меню';
 $_['entry_menu_item_name'] = 'Название пункта меню';
 $_['entry_menu_item_link'] = 'Ссылка пункта меню';
+$_['entry_menu_item_block_bottom_link_name'] = 'Название ссылки внизу блока';
+$_['entry_menu_item_block_bottom_link'] = 'Ссылка внизу блока';
 $_['entry_block_content'] = 'Содержимое блока';
 $_['entry_select_products_grid'] = 'Вид отображения товаров';
 $_['entry_bg_block']        = 'ФОН БЛОКА - Введите код цвета или Загрузите картинку';

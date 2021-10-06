@@ -4,6 +4,7 @@ class ModelExtensionModuleMenuConstructorNik extends Model {
 		$this->db->query("
 		CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "menu_item` (
 		  `menu_item_id` INT(11) NOT NULL AUTO_INCREMENT,
+		  `main` INT(11) NOT NULL,
 		  `sort_order` INT(11) NOT NULL,
 		  `status` TINYINT(1) NOT NULL DEFAULT 1,
 		  PRIMARY KEY (`menu_item_id`)
@@ -16,6 +17,8 @@ class ModelExtensionModuleMenuConstructorNik extends Model {
 		  `language_id` INT(11) NOT NULL,
 		  `name` VARCHAR(64) NOT NULL,
           `link` VARCHAR(255) NOT NULL,
+          `bottom_link_name` VARCHAR(64) NOT NULL,
+          `bottom_link` VARCHAR(255) NOT NULL,
 		  PRIMARY KEY (`id`, `language_id`)
 		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 		");
@@ -59,12 +62,12 @@ class ModelExtensionModuleMenuConstructorNik extends Model {
 	}
 
     public function addMenuItem($data) {
-        $this->db->query("INSERT INTO " . DB_PREFIX . "menu_item SET `sort_order` = '" . (int)$data['sort_order'] . "', status = '" . (int)$data['status'] . "'");
+        $this->db->query("INSERT INTO " . DB_PREFIX . "menu_item SET `main` = '" . (int)$data['main'] . "', `sort_order` = '" . (int)$data['sort_order'] . "', status = '" . (int)$data['status'] . "'");
 
         $menu_item_id = $this->db->getLastId();
 
         foreach ($data['menu_constructor_nik_description'] as $language_id => $value) {
-            $this->db->query("INSERT INTO " . DB_PREFIX . "menu_item_description SET menu_item_id = '" . (int)$menu_item_id . "', language_id = '" . (int)$language_id . "', `name` = '" . $this->db->escape($value['name']) . "', `link` = '" . $this->db->escape($value['link']) . "'");
+            $this->db->query("INSERT INTO " . DB_PREFIX . "menu_item_description SET menu_item_id = '" . (int)$menu_item_id . "', language_id = '" . (int)$language_id . "', `name` = '" . $this->db->escape($value['name']) . "', `link` = '" . $this->db->escape($value['link']) . "', `bottom_link_name` = '" . $this->db->escape($value['bottom_link_name']) . "', `bottom_link` = '" . $this->db->escape($value['bottom_link']) . "'");
         }
 
         $this->cache->delete('menu_item');
@@ -73,12 +76,12 @@ class ModelExtensionModuleMenuConstructorNik extends Model {
     }
 
     public function editMenuItem($menu_item_id, $data) {
-        $this->db->query("UPDATE " . DB_PREFIX . "menu_item SET `sort_order` = '" . (int)$data['sort_order'] . "', status = '" . (int)$data['status'] . "' WHERE menu_item_id = '" . $menu_item_id . "'");
+        $this->db->query("UPDATE " . DB_PREFIX . "menu_item SET `main` = '" . (int)$data['main'] . "', `sort_order` = '" . (int)$data['sort_order'] . "', status = '" . (int)$data['status'] . "' WHERE menu_item_id = '" . $menu_item_id . "'");
 
         $this->db->query("DELETE FROM " . DB_PREFIX . "menu_item_description WHERE menu_item_id = '" . (int)$menu_item_id . "'");
 
         foreach ($data['menu_constructor_nik_description'] as $language_id => $value) {
-            $this->db->query("INSERT INTO " . DB_PREFIX . "menu_item_description SET menu_item_id = '" . (int)$menu_item_id . "', language_id = '" . (int)$language_id . "', `name` = '" . $this->db->escape($value['name']) . "', `link` = '" . $this->db->escape($value['link']) . "'");
+            $this->db->query("INSERT INTO " . DB_PREFIX . "menu_item_description SET menu_item_id = '" . (int)$menu_item_id . "', language_id = '" . (int)$language_id . "', `name` = '" . $this->db->escape($value['name']) . "', `link` = '" . $this->db->escape($value['link']) . "', `bottom_link_name` = '" . $this->db->escape($value['bottom_link_name']) . "', `bottom_link` = '" . $this->db->escape($value['bottom_link']) . "'");
         }
 
         $this->cache->delete('menu_item');
@@ -103,16 +106,28 @@ class ModelExtensionModuleMenuConstructorNik extends Model {
 
         foreach ($query->rows as $result) {
             $menu_item_description_data[$result['language_id']] = array(
-                'name' => $result['name'],
-                'link' => $result['link']
+                'name'             => $result['name'],
+                'link'             => $result['link'],
+                'bottom_link_name' => $result['bottom_link_name'],
+                'bottom_link'      => $result['bottom_link'],
             );
         }
 
         return $menu_item_description_data;
     }
 
+    public function getMenuItemName($menu_item_id) {
+        $query = $this->db->query("SELECT `menu_item_id`, `name` FROM " . DB_PREFIX . "menu_item_description WHERE `menu_item_id` = '" . (int)$menu_item_id . "' AND language_id = '" . (int)$this->config->get('config_language_id') ."'");
+
+        return $query->row;
+    }
+
     public function getMenuItems($data = array()) {
         $sql = "SELECT * FROM " . DB_PREFIX . "menu_item mi LEFT JOIN " . DB_PREFIX . "menu_item_description mid ON (mi.menu_item_id = mid.menu_item_id) WHERE mid.language_id = '" . (int)$this->config->get('config_language_id') . "'";
+
+        if (!empty($data['filter_name'])) {
+            $sql .= " AND mid.`name` LIKE '" . $this->db->escape($data['filter_name']) . "%'";
+        }
 
         $sort_data = array(
             'mid.name',
@@ -232,12 +247,12 @@ class ModelExtensionModuleMenuConstructorNik extends Model {
         $block_data_info = $query->rows;
 
         foreach ($block_data_info as $k => $block_data) {
-            $query2 = $this->db->query("SELECT `product_id` FROM " . DB_PREFIX . "product_to_menu_item_block WHERE `block_data_id` = '" . (int)$block_data['id'] . "'");
+            $query2 = $this->db->query("SELECT `product_id` FROM " . DB_PREFIX . "product_to_menu_item_block WHERE `block_data_id` = '" . (int)$block_data['id'] . "' ORDER BY `id`");
             $block_data_info[$k]['products'] = $query2->rows;
         }
 
         foreach ($block_data_info as $k => $block_data) {
-            $query3 = $this->db->query("SELECT `menu_item_id` FROM " . DB_PREFIX . "menu_item_to_menu_item_block WHERE `block_data_id` = '" . (int)$block_data['id'] . "'");
+            $query3 = $this->db->query("SELECT `menu_item_id` FROM " . DB_PREFIX . "menu_item_to_menu_item_block WHERE `block_data_id` = '" . (int)$block_data['id'] . "' ORDER BY `id`");
             $block_data_info[$k]['menu_items'] = $query3->rows;
         }
 
@@ -249,10 +264,10 @@ class ModelExtensionModuleMenuConstructorNik extends Model {
 
         $block_data_info = $query->row;
 
-        $query2 = $this->db->query("SELECT `product_id` FROM " . DB_PREFIX . "product_to_menu_item_block WHERE `block_data_id` = '" . (int)$block_data_id . "'");
+        $query2 = $this->db->query("SELECT `product_id` FROM " . DB_PREFIX . "product_to_menu_item_block WHERE `block_data_id` = '" . (int)$block_data_id . "' ORDER BY `id`");
         $block_data_info['products'] = $query2->rows;
 
-        $query3 = $this->db->query("SELECT `menu_item_id` FROM " . DB_PREFIX . "menu_item_to_menu_item_block WHERE `block_data_id` = '" . (int)$block_data_id . "'");
+        $query3 = $this->db->query("SELECT `menu_item_id` FROM " . DB_PREFIX . "menu_item_to_menu_item_block WHERE `block_data_id` = '" . (int)$block_data_id . "' ORDER BY `id`");
         $block_data_info['menu_items'] = $query3->rows;
 
         return $block_data_info;

@@ -1,0 +1,172 @@
+<style>
+  .menu-constructor-nik {
+    display: flex;
+    padding-top: 15px;
+    padding-bottom: 12px;
+    line-height: 4px;
+    vertical-align: top;
+    z-index: 10000;
+  }
+  .menu-constructor-nik-item {
+    flex-basis: auto;
+    flex-grow: 1;
+    padding-left: 38px;
+    position: static;
+  }
+  .menu-constructor-nik-item a {
+    display: inline-block;
+    position: relative;
+    color: #1c1c1c;
+    -moz-transition: 0.4s color;
+    -o-transition: 0.4s color;
+    -webkit-transition: 0.4s color;
+    transition: 0.4s color;
+  }
+  .menu-constructor-nik-item span {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    color: #fff;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .menu-constructor-nik-item:hover .menu-constructor-nik-item-block {
+    display: block;
+  }
+  .menu-constructor-nik-item-block {
+    background: #fff;
+    display: none;
+    position: absolute;
+    width: 100vw;
+    left: 0;
+    margin-top: 8px;
+    padding: 27px 16px 34px;
+    z-index: 999;
+    min-height: 538px;
+    border-bottom: 1px solid black;
+    line-height: 12px;
+    font-size: 14px;
+  }
+  .w-100 {
+    width: 100%;
+  }
+  .w-66 {
+    width: 66.7%;
+  }
+  .w-50 {
+    width: 50%;
+    float: left;
+  }
+  .w-33 {
+    width: 33.3%;
+    float: left;
+  }
+  .w-25 {
+    width: 25%;
+    float: left;
+  }
+  .w-20 {
+    width: 20%;
+    float: left;
+  }
+  .w-16 {
+    width: 16.6%;
+    float: left;
+  }
+  .w-12 {
+    width: 12%;
+    float: left;
+  }
+</style>
+
+<div class="row" style="background-color: #000;">
+  <div class="container">
+    <div class="menu-constructor-nik">
+
+      {% for menu_item in menu %}
+
+        <div class="menu-constructor-nik-item">
+          {% if menu_item.link %}
+            <a href="{{ menu_item.link }}">
+              <span>{{ menu_item.name }}</span>
+            </a>
+          {% else %}
+            <span>{{ menu_item.name }}</span>
+          {% endif %}
+
+          {% if menu_item.block %}
+            <div class="menu-constructor-nik-item-block">
+
+              <div style="max-width: 1170px; margin: 0 auto; display: flex; justify-content: center; flex-wrap: wrap;">
+                {% if menu_item.block.grid_id == "1" %}
+                  {% set colCounts = 1 %}
+                {% elseif menu_item.block.grid_id == "2" or menu_item.block.grid_id == "5" or menu_item.block.grid_id == "6" %}
+                  {% set colCounts = 2 %}
+                {% elseif menu_item.block.grid_id == "3" or menu_item.block.grid_id == "7" or menu_item.block.grid_id == "8" or menu_item.block.grid_id == "9" or menu_item.block.grid_id == "12" %}
+                  {% set colCounts = 3 %}
+                {% elseif menu_item.block.grid_id == "4" %}
+                  {% set colCounts = 4 %}
+                {% elseif menu_item.block.grid_id == "10" %}
+                  {% set colCounts = 5 %}
+                {% elseif menu_item.block.grid_id == "11" %}
+                  {% set colCounts = 6 %}
+                {% endif %}
+
+                {% set ignoredCols = [] %}
+
+                {% for colId in 1..colCounts %}
+                  {% for block_data in menu_item.block.blocks_data if block_data.col_id == colId %}
+
+                    <div class="{{ block_data.block_grid_width }}" style="margin: 0 auto;">
+                      <div class="w-100" style="display: flex; flex-direction: column;">
+                        {% for content in block_data.contents %}
+                          {% if content.type == 'text' %}
+                            <div>
+                              {{ content.value }}
+                            </div>
+                          {% elseif content.type == 'products' %}
+                            <div> <!-- style="margin: 0 auto;" -->
+                              {% for product in content.value %}
+
+                                <a href="{{ product.href }}" class="product-layout product-list col-sm-3 col-xs-12" style="margin: 0 7px 0 0px; padding: 10px 0; width: fit-content; display: block;">
+                                  <div class="added-product-image" style="background-color: #f5f5f5; padding: 44px 19px; width: fit-content; margin: 0px 0px 18px;">
+                                    <img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" />
+                                  </div>
+                                  <div class="caption" style="margin-top: 7px; text-align: left;">
+                                    <p style="color: black; font-weight: bold;">{{ product.model }}</p>
+                                    <p style="color: black; margin: 10px 0px;">{{ product.name }}</p>
+                                    <p class="price" style="display: inline-block; color: #000; font-weight: bold; letter-spacing: -.2px;">{{ product.price }}</p>
+                                  </div>
+                                </a>
+
+                              {% endfor %}
+                            </div>
+                          {% elseif content.type == 'menu_items' %}
+                            <div>
+                              {% for menu_item in content.value %}
+                                <a href="{{ menu_item.link }}" style="color: black; margin-top: 18px; display: block;">
+                                  {{ menu_item.name }}
+                                </a>
+                              {% endfor %}
+                            </div>
+                          {% endif %}
+                        {% endfor %}
+
+                      </div>
+                    </div>
+
+                  {% endfor %}
+
+                {% endfor %}
+              </div>
+
+            </div>
+          {% endif %}
+
+        </div>
+
+      {% endfor %}
+
+    </div>
+  </div>
+</div>
