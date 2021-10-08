@@ -2,7 +2,6 @@
   .menu-constructor-nik {
     display: flex;
     padding-top: 15px;
-    /*padding-bottom: 12px;*/
     line-height: 4px;
     vertical-align: top;
     z-index: 10000;
@@ -152,9 +151,6 @@
     font-size: 14px;
     line-height: 20px;
     overflow: auto;
-    /*-webkit-box-shadow: 5px 0 5px 0 rgb(0 0 0 / 10%);*/
-    /*-moz-box-shadow: 5px 0 5px 0 rgba(0, 0, 0, 0.1);*/
-    /*box-shadow: 5px 0 5px 0 rgb(0 0 0 / 10%);*/
     -moz-transform: translateX(-100%);
     -ms-transform: translateX(-100%);
     -o-transform: translateX(-100%);
@@ -173,7 +169,6 @@
     bottom: -50px;
     width: 100%;
     padding: 0px 0 70px;
-    /*background: #FFF;*/
     font-size: 14px;
     line-height: 20px;
     overflow: auto;
@@ -378,11 +373,11 @@
                 {% endfor %}
               </div>
 
-                {% if menu_item.bottom_link_name and menu_item.bottom_link %}
-                    <a href="{{ menu_item.bottom_link }}" class="menu-constructor-nik-item-block-bottom-link">
-                        <span>{{ menu_item.bottom_link_name }}</span>
-                    </a>
-                {% endif %}
+              {% if menu_item.bottom_link_name and menu_item.bottom_link %}
+                  <a href="{{ menu_item.bottom_link }}" class="menu-constructor-nik-item-block-bottom-link">
+                      <span>{{ menu_item.bottom_link_name }}</span>
+                  </a>
+              {% endif %}
 
             </div>
           {% endif %}

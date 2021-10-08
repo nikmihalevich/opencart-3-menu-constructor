@@ -11,7 +11,7 @@ class ControllerExtensionModuleMenuConstructorNik extends Controller {
 		$this->load->model('extension/module/menu_constructor_nik');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
-			$this->model_setting_setting->editSetting('module_menu_constructor_nik', $this->request->post);
+//			$this->model_setting_setting->editSetting('module_menu_constructor_nik', $this->request->post);
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
@@ -277,11 +277,11 @@ class ControllerExtensionModuleMenuConstructorNik extends Controller {
         $data['sort_category_title'] = $this->url->link('extension/module/menu_constructor_nik', 'user_token=' . $this->session->data['user_token'] . '&sort=hcd.title' . $url, true);
         $data['sort_category_sort_order'] = $this->url->link('extension/module/menu_constructor_nik', 'user_token=' . $this->session->data['user_token'] . '&sort=hc.sort_order' . $url, true);
 
-        if (isset($this->request->post['module_menu_constructor_nik_status'])) {
-            $data['module_menu_constructor_nik_status'] = $this->request->post['module_menu_constructor_nik_status'];
-        } else {
-            $data['module_menu_constructor_nik_status'] = $this->config->get('module_menu_constructor_nik_status');
-        }
+//        if (isset($this->request->post['module_menu_constructor_nik_status'])) {
+//            $data['module_menu_constructor_nik_status'] = $this->request->post['module_menu_constructor_nik_status'];
+//        } else {
+//            $data['module_menu_constructor_nik_status'] = $this->config->get('module_menu_constructor_nik_status');
+//        }
 
         $filter_data = array(
             'sort'        => $sort,

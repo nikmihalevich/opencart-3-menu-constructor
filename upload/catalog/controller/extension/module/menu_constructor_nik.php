@@ -1,7 +1,6 @@
 <?php
 class ControllerExtensionModuleMenuConstructorNik extends Controller {
 	public function index() {
-//		$this->load->language('extension/module/account');
 		$this->load->model('extension/module/menu_constructor_nik');
 
 		$data = array();
@@ -87,13 +86,6 @@ class ControllerExtensionModuleMenuConstructorNik extends Controller {
                 $menu_items[$menu_item_key]['block'] = $block_info;
             }
 		}
-
-//        echo "<pre>";
-//        foreach ($menu_items as $menu_item) {
-//            print_r($menu_item['block']);
-//        }
-//        print_r($menu_items);
-//        echo "</pre>";
 
         $data['menu'] = $menu_items;
 
