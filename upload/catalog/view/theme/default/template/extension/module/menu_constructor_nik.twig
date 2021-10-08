@@ -48,33 +48,36 @@
     line-height: 12px;
     font-size: 14px;
   }
+  .menu-constructor-nik-item-block-text img {
+    max-width: 100%;
+  }
   .menu-constructor-nik-item-block-bottom-link {
-      color: #000!important;
-      position: absolute;
-      display: block;
-      height: 31px;
-      line-height: 31px;
-      clear: both;
-      float: none;
-      font-size: 12px;
-      text-transform: uppercase;
-      width: 100%;
-      text-align: center;
-      background: #e5e5e5;
-      margin-top: 20px;
-      left: 0;
-      bottom: 0;
-      -moz-transition: 0.4s;
-      -o-transition: 0.4s;
-      -webkit-transition: 0.4s;
-      transition: 0.4s;
+    color: #000!important;
+    position: absolute;
+    display: block;
+    height: 31px;
+    line-height: 31px;
+    clear: both;
+    float: none;
+    font-size: 12px;
+    text-transform: uppercase;
+    width: 100%;
+    text-align: center;
+    background: #e5e5e5;
+    margin-top: 20px;
+    left: 0;
+    bottom: 0;
+    -moz-transition: 0.4s;
+    -o-transition: 0.4s;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
   }
   .menu-constructor-nik-item-block-bottom-link:hover {
-      background: #cecece;
-      -moz-transition: 0.4s;
-      -o-transition: 0.4s;
-      -webkit-transition: 0.4s;
-      transition: 0.4s;
+    background: #cecece;
+    -moz-transition: 0.4s;
+    -o-transition: 0.4s;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
   }
   .menu-constructor-nik-item-block-bottom-link span {
       margin-left: -15px;
@@ -149,6 +152,31 @@
     font-size: 14px;
     line-height: 20px;
     overflow: auto;
+    /*-webkit-box-shadow: 5px 0 5px 0 rgb(0 0 0 / 10%);*/
+    /*-moz-box-shadow: 5px 0 5px 0 rgba(0, 0, 0, 0.1);*/
+    /*box-shadow: 5px 0 5px 0 rgb(0 0 0 / 10%);*/
+    -moz-transform: translateX(-100%);
+    -ms-transform: translateX(-100%);
+    -o-transform: translateX(-100%);
+    -webkit-transform: translateX(-100%);
+    transform: translateX(-100%);
+    -moz-transition: 0.3s ease;
+    -o-transition: 0.3s ease;
+    -webkit-transition: 0.3s ease;
+    transition: 0.3s ease;
+  }
+  .mobile-menu-constructor-nik-overlay {
+    z-index: 14;
+    position: fixed;
+    top: 0px;
+    left: 0;
+    bottom: -50px;
+    width: 100%;
+    padding: 0px 0 70px;
+    /*background: #FFF;*/
+    font-size: 14px;
+    line-height: 20px;
+    overflow: auto;
     -webkit-box-shadow: 5px 0 5px 0 rgb(0 0 0 / 10%);
     -moz-box-shadow: 5px 0 5px 0 rgba(0, 0, 0, 0.1);
     box-shadow: 5px 0 5px 0 rgb(0 0 0 / 10%);
@@ -162,7 +190,7 @@
     -webkit-transition: 0.3s ease;
     transition: 0.3s ease;
   }
-  .mobile-menu-constructor-nik.active .mobile-menu-constructor-nik-inner {
+  .mobile-menu-constructor-nik.active .mobile-menu-constructor-nik-inner, .mobile-menu-constructor-nik.active .mobile-menu-constructor-nik-overlay {
     transform: translateX(0);
   }
   .mobile-menu-constructor-nik-inner li {
@@ -185,6 +213,15 @@
   }
   .mobile-menu-constructor-nik-item-link {
     position: relative;
+    width: 100%;
+    border-bottom: #f5f5f5 solid 1px;
+    display: block;
+    color: #666;
+    padding: 12px 45px 12px 20px;
+  }
+  .mobile-menu-constructor-nik-item-link:hover {
+    text-decoration: none;
+    color: #000;
   }
   .mobile-menu-constructor-nik-item-title {
     font-size: 15px;
@@ -213,9 +250,13 @@
   .mobile-menu-constructor-nik-item-submenu-inner {
     max-width: 1217px;
     margin-left: 0px;
+    padding-top: 10px;
   }
   .mobile-menu-constructor-nik-item-submenu-item {
     width: auto;
+  }
+  .mobile-menu-constructor-nik-item-submenu-item img {
+    max-width: 100%;
   }
   .mobile-menu-constructor-nik ul ul a {
     padding-left: 35px;
@@ -228,7 +269,7 @@
     padding-left: 35px;
     display: block;
     width: 90%;
-    margin: 0px auto;
+    margin: 5px auto;
   }
   .mobile-menu-constructor-nik-item-link.active .mobile-menu-constructor-nik-item-toggle {
     -moz-transform: rotate(180deg);
@@ -236,6 +277,23 @@
     -o-transform: rotate(180deg);
     -webkit-transform: rotate(180deg);
     transform: rotate(180deg);
+  }
+  .mobile-menu-constructor-nik-item-submenu-bottom-link {
+    -moz-transition: 0.4s;
+    -o-transition: 0.4s;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    margin: 0 !important;
+    width: 100% !important;
+    margin-top: 15px !important;
+    text-align: center;
+    background: #e5e5e5;
+  }
+  .mobile-menu-constructor-nik-item-submenu-bottom-link:hover {
+    background: #cecece;
+    -moz-transition: 0.4s;
+    -o-transition: 0.4s;
+    -webkit-transition: 0.4s;
   }
 </style>
 
@@ -281,7 +339,7 @@
                       <div class="w-100" style="display: flex; flex-direction: column;">
                         {% for content in block_data.contents %}
                           {% if content.type == 'text' %}
-                            <div>
+                            <div class="menu-constructor-nik-item-block-text">
                               {{ content.value }}
                             </div>
                           {% elseif content.type == 'products' %}
@@ -344,132 +402,100 @@
         </div>
     </div>
 
-    <div class="mobile-menu-constructor-nik active">
+    <div class="mobile-menu-constructor-nik">
         <ul class="mobile-menu-constructor-nik-inner">
-            <li class="mobile-menu-constructor-nik-item">
-                <a href="#" class="mobile-menu-constructor-nik-item-link ">
-                  <span class="mobile-menu-constructor-nik-item-title">MENU ITEM NAME</span>
-                  <span class="mobile-menu-constructor-nik-item-toggle"></span>
-                </a>
-                <ul class="mobile-menu-constructor-nik-item-submenu" style="display: none;">
-                    <div class="mobile-menu-constructor-nik-item-submenu-inner">
-                        <li class="mobile-menu-constructor-nik-item-submenu-item">
-                            <ul>
-                                <li>
-                                    <a href="#">SUBMENU ITEM NAME</a>
-                                </li>
-                                <li>
-                                    <a href="#">SUBMENU ITEM NAME</a>
-                                </li>
-                                <li>
-                                    <a href="#">SUBMENU ITEM NAME</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="mobile-menu-constructor-nik-item-submenu-item">
-                            <ul>
-                                <li>
-                                    <a href="#">SUBMENU ITEM NAME 2</a>
-                                </li>
-                                <li>
-                                    <a href="#">SUBMENU ITEM NAME 2</a>
-                                </li>
-                                <li>
-                                    <a href="#">SUBMENU ITEM NAME 2</a>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <a href="#" class="" style="margin: 0 7px 0 0px; width: fit-content; display: block;">
-                          <div class="" style="background-color: #f5f5f5; padding: 44px 19px; width: fit-content; margin: 0px 0px 18px;">
-                            <img src="http://opencartmenuconstructor/image/cache/catalog/demo/iphone_1-228x228.jpg" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" />
-                          </div>
-                          <div class="caption" style="margin-top: 7px; text-align: left;">
-                            <p style="color: black; font-weight: bold;">PRODUCT RED</p>
-                            <p style="color: black; margin: 10px 0px;">Dyhi Jevanshi</p>
-                            <p class="price" style="display: inline-block; color: #000; font-weight: bold; letter-spacing: -.2px;">РУБ 1 200</p>
-                          </div>
+            {% for menu_item in menu %}
+                <li class="mobile-menu-constructor-nik-item">
+                    {% if menu_item.link %}
+                        <a href="{{ menu_item.link }}" class="mobile-menu-constructor-nik-item-link ">
+                            <span class="mobile-menu-constructor-nik-item-title">{{ menu_item.name }}</span>
+                            {% if menu_item.block %}
+                                <span class="mobile-menu-constructor-nik-item-toggle"></span>
+                            {% endif %}
                         </a>
+                    {% else %}
+                        <div class="mobile-menu-constructor-nik-item-link">
+                            <span class="mobile-menu-constructor-nik-item-title">{{ menu_item.name }}</span>
+                            {% if menu_item.block %}
+                                <span class="mobile-menu-constructor-nik-item-toggle"></span>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    {% if menu_item.block %}
+                        <ul class="mobile-menu-constructor-nik-item-submenu" style="display: none;">
+                            <div class="mobile-menu-constructor-nik-item-submenu-inner">
+                                {% for block_data in menu_item.block.blocks_data %}
 
-                        <li class="mobile-menu-constructor-nik-item-submenu-item">
+                                    {% for content in block_data.contents %}
+                                        {% if content.type == 'text' %}
+                                            <li class="mobile-menu-constructor-nik-item-submenu-item">
+                                                <div class="mobile-menu-constructor-nik-item-submenu-item-text">
+                                                    {{ content.value }}
+                                                </div>
+                                            </li>
+                                        {% elseif content.type == 'products' %}
+                                            {% for product in content.value %}
+                                                <a href="{{ product.href }}" class="" style="margin: 0 7px 0 0px; width: fit-content; display: block;">
+                                                    <div class="" style="background-color: #f5f5f5; padding: 44px 19px; width: fit-content; margin: 0px 0px 18px;">
+                                                        <img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" />
+                                                    </div>
+                                                    <div class="caption" style="margin-top: 7px; text-align: left;">
+                                                        <p style="color: black; font-weight: bold;">{{ product.model }}</p>
+                                                        <p style="color: black; margin: 10px 0px;">{{ product.name }}</p>
+                                                        <p class="price" style="display: inline-block; color: #000; font-weight: bold; letter-spacing: -.2px;">{{ product.price }}</p>
+                                                    </div>
+                                                </a>
+                                            {% endfor %}
+                                        {% elseif content.type == 'menu_items' %}
+                                          <li class="mobile-menu-constructor-nik-item-submenu-item">
+                                              <ul>
+                                                  {% for menu_item in content.value %}
+                                                    <li>
+                                                        <a href="{{ menu_item.link }}">{{ menu_item.name }}</a>
+                                                    </li>
+                                                  {% endfor %}
+                                              </ul>
+                                          </li>
+                                        {% endif %}
+                                    {% endfor %}
 
-                            <div class="mobile-menu-constructor-nik-item-submenu-item-text">
-                              asfasfasfsaf
-                              <br>
-                              brsafsafasfsa
+                                {% endfor %}
+
+                                {% if menu_item.bottom_link_name and menu_item.bottom_link %}
+                                    <li class="mobile-menu-constructor-nik-item-submenu-item">
+                                        <a href="{{ menu_item.bottom_link }}" class="mobile-menu-constructor-nik-item-submenu-bottom-link">
+                                            {{ menu_item.bottom_link_name }}
+                                        </a>
+                                    </li>
+                                {% endif %}
                             </div>
-                        </li>
-                    </div>
-                </ul>
-            </li>
-            <li class="mobile-menu-constructor-nik-item">
-                <a href="#" class="mobile-menu-constructor-nik-item-link ">
-                  <span class="mobile-menu-constructor-nik-item-title">MENU ITEM NAME</span>
-                  <span class="mobile-menu-constructor-nik-item-toggle"></span>
-                </a>
-                <ul class="mobile-menu-constructor-nik-item-submenu" style="display: none;">
-                    <div class="mobile-menu-constructor-nik-item-submenu-inner">
-                        <li class="mobile-menu-constructor-nik-item-submenu-item">
-                            <ul>
-                                <li>
-                                    <a href="#">SUBMENU ITEM NAME</a>
-                                </li>
-                                <li>
-                                    <a href="#">SUBMENU ITEM NAME</a>
-                                </li>
-                                <li>
-                                    <a href="#">SUBMENU ITEM NAME</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="mobile-menu-constructor-nik-item-submenu-item">
-                            <ul>
-                                <li>
-                                    <a href="#">SUBMENU ITEM NAME 2</a>
-                                </li>
-                                <li>
-                                    <a href="#">SUBMENU ITEM NAME 2</a>
-                                </li>
-                                <li>
-                                    <a href="#">SUBMENU ITEM NAME 2</a>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <a href="#" class="" style="margin: 0 7px 0 0px; width: fit-content; display: block;">
-                          <div class="" style="background-color: #f5f5f5; padding: 44px 19px; width: fit-content; margin: 0px 0px 18px;">
-                            <img src="http://opencartmenuconstructor/image/cache/catalog/demo/iphone_1-228x228.jpg" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" />
-                          </div>
-                          <div class="caption" style="margin-top: 7px; text-align: left;">
-                            <p style="color: black; font-weight: bold;">PRODUCT RED</p>
-                            <p style="color: black; margin: 10px 0px;">Dyhi Jevanshi</p>
-                            <p class="price" style="display: inline-block; color: #000; font-weight: bold; letter-spacing: -.2px;">РУБ 1 200</p>
-                          </div>
-                        </a>
-
-                        <li class="mobile-menu-constructor-nik-item-submenu-item">
-
-                            <div class="mobile-menu-constructor-nik-item-submenu-item-text">
-                              asfasfasfsaf
-                              <br>
-                              brsafsafasfsa
-                            </div>
-                        </li>
-                    </div>
-                </ul>
-            </li>
+                        </ul>
+                    {% endif %}
+                </li>
+            {% endfor %}
         </ul>
+        <div class="mobile-menu-constructor-nik-overlay"></div>
     </div>
 </div>
 
 <script>
-  $('.mobile-menu-constructor-nik-item-toggle').on('click', function () {
+  $('.mobile-menu-constructor-nik-item-toggle').on('click', function (e) {
+      e.preventDefault()
       let that = $(this)
       that.parent().toggleClass('active')
-      // that.parent().parent().find('.mobile-menu-constructor-nik-item-submenu').toggle()
-      // let height = that.parent().parent().find('.mobile-menu-constructor-nik-item-submenu').height()
-      // that.parent().parent().find('.mobile-menu-constructor-nik-item-submenu').height(0)
-      // that.parent().parent().find('.mobile-menu-constructor-nik-item-submenu').height(height)
-      that.parent().parent().find('.mobile-menu-constructor-nik-item-submenu').slideToggle(500);
+      that.parent().parent().find('.mobile-menu-constructor-nik-item-submenu').slideToggle(400);
+  })
+  $('.burger-button').on('click', function () {
+      $('.mobile-menu-constructor-nik').toggleClass('active')
+  })
+  $('.mobile-menu-constructor-nik-overlay').on('click', function () {
+      $('.mobile-menu-constructor-nik').removeClass('active')
+  })
+  $(window).resize(function () {
+      let width = $(window).width()
+
+      if (width > 767) {
+          $('.mobile-menu-constructor-nik').removeClass('active')
+      }
   })
 </script>
