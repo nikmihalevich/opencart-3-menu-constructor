@@ -1,7 +1,7 @@
 <?php
 class ModelExtensionModuleMenuConstructorNik extends Model {
     public function getMenuItems() {
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "menu_item mi LEFT JOIN " . DB_PREFIX . "menu_item_description mid ON (mi.menu_item_id = mid.menu_item_id) WHERE mid.language_id = '" . (int)$this->config->get('config_language_id') . "' AND mi.main = '1' AND mi.status = '1' ORDER BY mi.sort_order");
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "menu_item mi LEFT JOIN " . DB_PREFIX . "menu_item_description mid ON (mi.menu_item_id = mid.menu_item_id) WHERE mid.language_id = '" . (int)$this->config->get('config_language_id') . "' AND mi.parent_id = '0' AND mi.status = '1' ORDER BY mi.sort_order");
 
         return $query->rows;
     }

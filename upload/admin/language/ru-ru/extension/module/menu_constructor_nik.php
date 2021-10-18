@@ -19,7 +19,7 @@ $_['text_list_menu_items']  = 'Список пунктов меню';
 // Entry
 $_['entry_sort_order'] = 'Порядок сортировки';
 $_['entry_status']     = 'Статус';
-$_['entry_main']       = 'Главный пункт меню';
+$_['entry_parent']     = 'Родительский пункт меню';
 $_['entry_menu_item_name'] = 'Название пункта меню';
 $_['entry_menu_item_link'] = 'Ссылка пункта меню';
 $_['entry_menu_item_block_bottom_link_name'] = 'Название ссылки внизу блока';
@@ -32,7 +32,7 @@ $_['entry_padding_block']   = 'ОТСТУПЫ ВНУТРИ БЛОКА';
 $_['entry_block_sort_ordinal']= 'СОРТИРОВКА ДАННЫХ В СПИСКЕ';
 $_['entry_position_data_in_block'] = 'Позиция данных в блоке';
 $_['entry_products']        = 'Товары';
-$_['entry_added_products']  = 'Добавлены в рассылке';
+$_['entry_added_products']  = 'Добавленые товары';
 $_['entry_list_products_categories'] = 'Список категорий товаров';
 $_['entry_text'] = 'Текст';
 $_['entry_menu_items_list'] = 'Не добавленные пункты меню';

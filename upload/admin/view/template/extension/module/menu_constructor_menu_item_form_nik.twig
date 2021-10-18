@@ -296,26 +296,18 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="col-sm-2 control-label">{{ entry_main }}</label>
+            <label class="col-sm-2 control-label">{{ entry_parent }}</label>
             <div class="col-sm-10">
-              <label class="radio-inline">
-                {% if main %}
-                  <input type="radio" name="main" value="1" checked="checked"/>
-                  {{ text_yes }}
-                {% else %}
-                  <input type="radio" name="main" value="1"/>
-                  {{ text_yes }}
-                {% endif %}
-              </label>
-              <label class="radio-inline">
-                {% if not main %}
-                  <input type="radio" name="main" value="0" checked="checked"/>
-                  {{ text_no }}
-                {% else %}
-                  <input type="radio" name="main" value="0"/>
-                  {{ text_no }}
-                {% endif %}
-              </label>
+              <select name="parent_id" id="input-parent-id" class="form-control">
+                <option value="0">{{ text_no }}</option>
+                {% for parent in parents %}
+                  {% if parent.menu_item_id == parent_id %}
+                    <option value="{{ parent.menu_item_id }}" selected>{{ parent.name }}</option>
+                  {% else %}
+                    <option value="{{ parent.menu_item_id }}">{{ parent.name }}</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
             </div>
           </div>
 
@@ -341,18 +333,20 @@
                     <input type="text" name="menu_constructor_nik_description[{{ language.language_id }}][link]" value="{{ menu_constructor_nik_description[language.language_id] ? menu_constructor_nik_description[language.language_id].link }}" placeholder="{{ entry_menu_item_link }}" id="input-link{{ language.language_id }}" class="form-control" />
                   </div>
                 </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label" for="input-bottom-link-name{{ language.language_id }}">{{ entry_menu_item_block_bottom_link_name }}</label>
-                  <div class="col-sm-10">
-                    <input type="text" name="menu_constructor_nik_description[{{ language.language_id }}][bottom_link_name]" value="{{ menu_constructor_nik_description[language.language_id] ? menu_constructor_nik_description[language.language_id].bottom_link_name }}" placeholder="{{ entry_menu_item_block_bottom_link_name }}" id="input-bottom-link-name{{ language.language_id }}" class="form-control" />
+                {% if parent_id == 0 %}
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label" for="input-bottom-link-name{{ language.language_id }}">{{ entry_menu_item_block_bottom_link_name }}</label>
+                    <div class="col-sm-10">
+                      <input type="text" name="menu_constructor_nik_description[{{ language.language_id }}][bottom_link_name]" value="{{ menu_constructor_nik_description[language.language_id] ? menu_constructor_nik_description[language.language_id].bottom_link_name }}" placeholder="{{ entry_menu_item_block_bottom_link_name }}" id="input-bottom-link-name{{ language.language_id }}" class="form-control" />
+                    </div>
                   </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label" for="input-bottom-link{{ language.language_id }}">{{ entry_menu_item_block_bottom_link }}</label>
-                  <div class="col-sm-10">
-                    <input type="text" name="menu_constructor_nik_description[{{ language.language_id }}][bottom_link]" value="{{ menu_constructor_nik_description[language.language_id] ? menu_constructor_nik_description[language.language_id].bottom_link }}" placeholder="{{ entry_menu_item_block_bottom_link }}" id="input-bottom-link{{ language.language_id }}" class="form-control" />
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label" for="input-bottom-link{{ language.language_id }}">{{ entry_menu_item_block_bottom_link }}</label>
+                    <div class="col-sm-10">
+                      <input type="text" name="menu_constructor_nik_description[{{ language.language_id }}][bottom_link]" value="{{ menu_constructor_nik_description[language.language_id] ? menu_constructor_nik_description[language.language_id].bottom_link }}" placeholder="{{ entry_menu_item_block_bottom_link }}" id="input-bottom-link{{ language.language_id }}" class="form-control" />
+                    </div>
                   </div>
-                </div>
+                {% endif %}
               </div>
             {% endfor %}
           </div>
@@ -360,7 +354,10 @@
         </form>
       </div>
     </div>
-    <div class="panel panel-default">
+
+    {% if parent_id == 0 %}
+
+      <div class="panel panel-default">
       <div class="panel-body">
         <div class="form-group">
           <label class="col-sm-2 control-label" for="input-name">{{ entry_block_content }}</label>
@@ -388,9 +385,12 @@
 
                       {% for colId in 1..colCounts %}
                         {% for block_data in block.blocks_data if block_data.col_id == colId %}
-
+                          {% if loop.first %}
+                            <div class="{{ block_data.block_grid_width }}">
+                          {% endif %}
+                          
                           <div class="{{ block_data.block_grid_width }} block-data-table w-xs" data-col-id="{{ block_data.col_id }}" style="margin: 0 auto;">
-                            <div class="w-100" style="display: flex; flex-direction: column;">
+                            <div class="w-100" style="display: flex; flex-direction: column; outline: 1px dashed #ccc;">
                               {% for content in block_data.contents %}
                                 {% if content.type == 'text' %}
                                   <div>
@@ -438,6 +438,10 @@
                             <button type="button" data-toggle="modal" data-target="#addBlockDataModal" data-tooltip="tooltip" title="{{ button_add }}" data-col-id="{{ colId }}" class="btn btn-success pull-right add-block-data-btn"><i class="fa fa-plus"></i></button>
                           </div>
 
+
+                          {% if loop.last %}
+                            </div>
+                          {% endif %}
                         {% endfor %}
 
                       {% endfor %}
@@ -544,6 +548,8 @@
         </div>
       </div>
     </div>
+
+    {% endif %}
   </div>
 
   <div class="modal fade bd-example-modal-lg" id="addBlockDataModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

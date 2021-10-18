@@ -4,7 +4,7 @@ class ModelExtensionModuleMenuConstructorNik extends Model {
 		$this->db->query("
 		CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "menu_item` (
 		  `menu_item_id` INT(11) NOT NULL AUTO_INCREMENT,
-		  `main` INT(11) NOT NULL,
+		  `parent_id` INT(11) NOT NULL,
 		  `sort_order` INT(11) NOT NULL,
 		  `status` TINYINT(1) NOT NULL DEFAULT 1,
 		  PRIMARY KEY (`menu_item_id`)
@@ -22,10 +22,24 @@ class ModelExtensionModuleMenuConstructorNik extends Model {
 		  PRIMARY KEY (`id`, `language_id`)
 		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 		");
+        $this->db->query("
+		CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "menu_item_path` (
+		  `menu_item_id` INT(11) NOT NULL,
+		  `path_id` INT(11) NOT NULL,
+		  `level` INT(11) NOT NULL,
+		  PRIMARY KEY (`menu_item_id`, `path_id`)
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+		");
         $this->db->query("CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "menu_item_block` (
             `id` INT(11) NOT NULL AUTO_INCREMENT,
             `menu_item_id` INT(11) NOT NULL,
             `grid_id` INT(11) NOT NULL,
+            PRIMARY KEY (`id`)
+		) ENGINE=MyISAM DEFAULT COLLATE=utf8_general_ci;");
+        $this->db->query("CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "menu_item_block_col` (
+            `id` INT(11) NOT NULL AUTO_INCREMENT,
+            `block_id` INT(11) NOT NULL,
+            `col_width` INT(11) NOT NULL,
             PRIMARY KEY (`id`)
 		) ENGINE=MyISAM DEFAULT COLLATE=utf8_general_ci;");
         $this->db->query("CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "menu_item_block_data` (
@@ -57,12 +71,16 @@ class ModelExtensionModuleMenuConstructorNik extends Model {
 	public function uninstall() {
 		$this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "menu_item`");
 		$this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "menu_item_description`");
+		$this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "menu_item_path`");
 		$this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "menu_item_block`");
+		$this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "menu_item_block_col`");
 		$this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "menu_item_block_data`");
+		$this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "product_to_menu_item_block`");
+		$this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "menu_item_to_menu_item_block`");
 	}
 
     public function addMenuItem($data) {
-        $this->db->query("INSERT INTO " . DB_PREFIX . "menu_item SET `main` = '" . (int)$data['main'] . "', `sort_order` = '" . (int)$data['sort_order'] . "', status = '" . (int)$data['status'] . "'");
+        $this->db->query("INSERT INTO " . DB_PREFIX . "menu_item SET `parent_id` = '" . (int)$data['parent_id'] . "', `sort_order` = '" . (int)$data['sort_order'] . "', status = '" . (int)$data['status'] . "'");
 
         $menu_item_id = $this->db->getLastId();
 
@@ -70,18 +88,82 @@ class ModelExtensionModuleMenuConstructorNik extends Model {
             $this->db->query("INSERT INTO " . DB_PREFIX . "menu_item_description SET menu_item_id = '" . (int)$menu_item_id . "', language_id = '" . (int)$language_id . "', `name` = '" . $this->db->escape($value['name']) . "', `link` = '" . $this->db->escape($value['link']) . "', `bottom_link_name` = '" . $this->db->escape($value['bottom_link_name']) . "', `bottom_link` = '" . $this->db->escape($value['bottom_link']) . "'");
         }
 
+        // MySQL Hierarchical Data Closure Table Pattern
+        $level = 0;
+
+        $query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "menu_item_path` WHERE menu_item_id = '" . (int)$data['parent_id'] . "' ORDER BY `level` ASC");
+
+        foreach ($query->rows as $result) {
+            $this->db->query("INSERT INTO `" . DB_PREFIX . "menu_item_path` SET `menu_item_id` = '" . (int)$menu_item_id . "', `path_id` = '" . (int)$result['path_id'] . "', `level` = '" . (int)$level . "'");
+
+            $level++;
+        }
+
+        $this->db->query("INSERT INTO `" . DB_PREFIX . "menu_item_path` SET `menu_item_id` = '" . (int)$menu_item_id . "', `path_id` = '" . (int)$menu_item_id . "', `level` = '" . (int)$level . "'");
+
         $this->cache->delete('menu_item');
 
         return $menu_item_id;
     }
 
     public function editMenuItem($menu_item_id, $data) {
-        $this->db->query("UPDATE " . DB_PREFIX . "menu_item SET `main` = '" . (int)$data['main'] . "', `sort_order` = '" . (int)$data['sort_order'] . "', status = '" . (int)$data['status'] . "' WHERE menu_item_id = '" . $menu_item_id . "'");
+        $this->db->query("UPDATE " . DB_PREFIX . "menu_item SET `parent_id` = '" . (int)$data['parent_id'] . "', `sort_order` = '" . (int)$data['sort_order'] . "', status = '" . (int)$data['status'] . "' WHERE menu_item_id = '" . $menu_item_id . "'");
 
         $this->db->query("DELETE FROM " . DB_PREFIX . "menu_item_description WHERE menu_item_id = '" . (int)$menu_item_id . "'");
 
         foreach ($data['menu_constructor_nik_description'] as $language_id => $value) {
             $this->db->query("INSERT INTO " . DB_PREFIX . "menu_item_description SET menu_item_id = '" . (int)$menu_item_id . "', language_id = '" . (int)$language_id . "', `name` = '" . $this->db->escape($value['name']) . "', `link` = '" . $this->db->escape($value['link']) . "', `bottom_link_name` = '" . $this->db->escape($value['bottom_link_name']) . "', `bottom_link` = '" . $this->db->escape($value['bottom_link']) . "'");
+        }
+
+        // MySQL Hierarchical Data Closure Table Pattern
+        $query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "menu_item_path` WHERE path_id = '" . (int)$menu_item_id . "' ORDER BY level ASC");
+
+        if ($query->rows) {
+            foreach ($query->rows as $menu_item_path) {
+                // Delete the path below the current one
+                $this->db->query("DELETE FROM `" . DB_PREFIX . "menu_item_path` WHERE menu_item_id = '" . (int)$menu_item_path['menu_item_id'] . "' AND level < '" . (int)$menu_item_path['level'] . "'");
+
+                $path = array();
+
+                // Get the nodes new parents
+                $query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "menu_item_path` WHERE menu_item_id = '" . (int)$data['parent_id'] . "' ORDER BY level ASC");
+
+                foreach ($query->rows as $result) {
+                    $path[] = $result['path_id'];
+                }
+
+                // Get whats left of the nodes current path
+                $query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "menu_item_path` WHERE menu_item_id = '" . (int)$menu_item_path['menu_item_id'] . "' ORDER BY level ASC");
+
+                foreach ($query->rows as $result) {
+                    $path[] = $result['path_id'];
+                }
+
+                // Combine the paths with a new level
+                $level = 0;
+
+                foreach ($path as $path_id) {
+                    $this->db->query("REPLACE INTO `" . DB_PREFIX . "menu_item_path` SET menu_item_id = '" . (int)$menu_item_path['menu_item_id'] . "', `path_id` = '" . (int)$path_id . "', level = '" . (int)$level . "'");
+
+                    $level++;
+                }
+            }
+        } else {
+            // Delete the path below the current one
+            $this->db->query("DELETE FROM `" . DB_PREFIX . "menu_item_path` WHERE menu_item_id = '" . (int)$menu_item_id . "'");
+
+            // Fix for records with no paths
+            $level = 0;
+
+            $query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "menu_item_path` WHERE menu_item_id = '" . (int)$data['parent_id'] . "' ORDER BY level ASC");
+
+            foreach ($query->rows as $result) {
+                $this->db->query("INSERT INTO `" . DB_PREFIX . "menu_item_path` SET menu_item_id = '" . (int)$menu_item_id . "', `path_id` = '" . (int)$result['path_id'] . "', level = '" . (int)$level . "'");
+
+                $level++;
+            }
+
+            $this->db->query("REPLACE INTO `" . DB_PREFIX . "menu_item_path` SET menu_item_id = '" . (int)$menu_item_id . "', `path_id` = '" . (int)$menu_item_id . "', level = '" . (int)$level . "'");
         }
 
         $this->cache->delete('menu_item');
@@ -123,21 +205,23 @@ class ModelExtensionModuleMenuConstructorNik extends Model {
     }
 
     public function getMenuItems($data = array()) {
-        $sql = "SELECT * FROM " . DB_PREFIX . "menu_item mi LEFT JOIN " . DB_PREFIX . "menu_item_description mid ON (mi.menu_item_id = mid.menu_item_id) WHERE mid.language_id = '" . (int)$this->config->get('config_language_id') . "'";
+        $sql = "SELECT mip.menu_item_id AS menu_item_id, GROUP_CONCAT(mid1.name ORDER BY mip.level SEPARATOR '&nbsp;&nbsp;&gt;&nbsp;&nbsp;') AS name, mi1.parent_id, mi1.sort_order FROM " . DB_PREFIX . "menu_item_path mip LEFT JOIN " . DB_PREFIX . "menu_item mi1 ON (mip.menu_item_id = mi1.menu_item_id) LEFT JOIN " . DB_PREFIX . "menu_item mi2 ON (mip.path_id = mi2.menu_item_id) LEFT JOIN " . DB_PREFIX . "menu_item_description mid1 ON (mip.path_id = mid1.menu_item_id) LEFT JOIN " . DB_PREFIX . "menu_item_description mid2 ON (mip.menu_item_id = mid2.menu_item_id) WHERE mid1.language_id = '" . (int)$this->config->get('config_language_id') . "' AND mid2.language_id = '" . (int)$this->config->get('config_language_id') . "'";
 
         if (!empty($data['filter_name'])) {
-            $sql .= " AND mid.`name` LIKE '" . $this->db->escape($data['filter_name']) . "%'";
+            $sql .= " AND mid2.`name` LIKE '" . $this->db->escape($data['filter_name']) . "%'";
         }
 
+        $sql .= " GROUP BY mip.menu_item_id";
+
         $sort_data = array(
-            'mid.name',
-            'mi.sort_order'
+            'name',
+            'sort_order'
         );
 
         if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
             $sql .= " ORDER BY " . $data['sort'];
         } else {
-            $sql .= " ORDER BY mi.sort_order";
+            $sql .= " ORDER BY name";
         }
 
         if (isset($data['order']) && ($data['order'] == 'DESC')) {
@@ -147,6 +231,12 @@ class ModelExtensionModuleMenuConstructorNik extends Model {
         }
 
         $query = $this->db->query($sql);
+
+        return $query->rows;
+    }
+
+    public function getMenuItemsParents() {
+        $query = $this->db->query("SELECT mi.menu_item_id, mid.`name` FROM " . DB_PREFIX . "menu_item mi LEFT JOIN " . DB_PREFIX . "menu_item_description mid ON (mi.menu_item_id = mid.menu_item_id) WHERE mid.language_id = '" . (int)$this->config->get('config_language_id') . "' AND mi.parent_id = '0' ORDER BY mid.name ASC");
 
         return $query->rows;
     }
@@ -185,6 +275,16 @@ class ModelExtensionModuleMenuConstructorNik extends Model {
         $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "menu_item_block WHERE `id` = '" . (int)$block_id . "'");
 
         return $query->row;
+    }
+
+    public function addCol($block_id, $col_width) {
+        $this->db->query("INSERT INTO " . DB_PREFIX . "menu_item_block_col SET `block_id` = '" . (int)$block_id . "', `col_width` = '" . (int)$col_width . "'");
+
+        $col_id = $this->db->getLastId();
+
+        $this->cache->delete('menu_item_block_col');
+
+        return $col_id;
     }
 
     public function addBlockData($data) {
