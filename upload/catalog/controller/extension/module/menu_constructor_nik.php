@@ -17,70 +17,76 @@ class ControllerExtensionModuleMenuConstructorNik extends Controller {
                     $this->load->model('catalog/product');
                     $this->load->model('tool/image');
 
-                    $block_data_info = $this->model_extension_module_menu_constructor_nik->getBlockData($block_info['id']);
+                    $block_cols = $this->model_extension_module_menu_constructor_nik->getBlockCols($block_info['id']);
 
-                    foreach ($block_data_info as $kk => $block_data) {
-                        $contents = array();
-                        if (!empty($block_data['text'])) {
-                            $contents[] = array(
-                                'value'   => $block_data['text'],
-                                'sort'    => $block_data['text_ordinal'],
-                                'type'    => 'text'
-                            );
-                        }
+                    foreach ($block_cols as $col_id => $block_col) {
+                        $block_data_info = $this->model_extension_module_menu_constructor_nik->getBlockData($block_col['id']);
 
-                        if (!empty($block_data['products'])) {
-                            $results = array();
-                            foreach ($block_data['products'] as $product) {
-                                $results[] = $this->model_catalog_product->getProduct($product['product_id']);
+                        foreach ($block_data_info as $kk => $block_data) {
+                            $contents = array();
+                            if (!empty($block_data['text'])) {
+                                $contents[] = array(
+                                    'value' => $block_data['text'],
+                                    'sort' => $block_data['text_ordinal'],
+                                    'type' => 'text'
+                                );
                             }
 
-                            foreach ($results as $kkk => $result) {
-                                $results[$kkk]['price'] = $this->currency->format($result['price'], $this->config->get('config_currency'));
-                                if ($results[$kkk]['image']) {
-                                    $results[$kkk]['thumb'] = $this->model_tool_image->resize($result['image'], 133, 133);
-                                } else {
-                                    $results[$kkk]['thumb'] = $this->model_tool_image->resize('no_image.png', 133, 133);
+                            if (!empty($block_data['products'])) {
+                                $results = array();
+                                foreach ($block_data['products'] as $product) {
+                                    $results[] = $this->model_catalog_product->getProduct($product['product_id']);
                                 }
-                                $results[$kkk]['href'] = $this->url->link('product/product', 'product_id=' . $result['product_id']);
+
+                                foreach ($results as $kkk => $result) {
+                                    $results[$kkk]['price'] = $this->currency->format($result['price'], $this->config->get('config_currency'));
+                                    if ($results[$kkk]['image']) {
+                                        $results[$kkk]['thumb'] = $this->model_tool_image->resize($result['image'], 133, 133);
+                                    } else {
+                                        $results[$kkk]['thumb'] = $this->model_tool_image->resize('no_image.png', 133, 133);
+                                    }
+                                    $results[$kkk]['href'] = $this->url->link('product/product', 'product_id=' . $result['product_id']);
+                                }
+
+                                if (!empty($results)) {
+                                    $contents[] = array(
+                                        'value' => $results,
+                                        'sort' => $block_data['products_ordinal'],
+                                        'type' => 'products'
+                                    );
+                                }
                             }
 
-                            if (!empty($results)) {
-                                $contents[] = array(
-                                    'value'   => $results,
-                                    'sort'    => $block_data['products_ordinal'],
-                                    'type'    => 'products'
-                                );
+                            if (!empty($block_data['menu_items'])) {
+                                $results = array();
+                                foreach ($block_data['menu_items'] as $menu_item) {
+                                    $results[] = $this->model_extension_module_menu_constructor_nik->getMenuItemInfo($menu_item['menu_item_id']);
+                                }
+
+                                if (!empty($results)) {
+                                    $contents[] = array(
+                                        'value' => $results,
+                                        'sort' => $block_data['menu_items_ordinal'],
+                                        'type' => 'menu_items'
+                                    );
+                                }
                             }
+
+                            $sort_order = array();
+
+                            foreach ($contents as $key => $value) {
+                                $sort_order[$key] = $value['sort'];
+                            }
+
+                            array_multisort($sort_order, SORT_ASC, $contents);
+
+                            $block_data_info[$kk]['contents'] = $contents;
                         }
 
-                        if (!empty($block_data['menu_items'])) {
-                            $results = array();
-                            foreach ($block_data['menu_items'] as $menu_item) {
-                                $results[] = $this->model_extension_module_menu_constructor_nik->getMenuItemInfo($menu_item['menu_item_id']);
-                            }
-
-                            if (!empty($results)) {
-                                $contents[] = array(
-                                    'value'   => $results,
-                                    'sort'    => $block_data['menu_items_ordinal'],
-                                    'type'    => 'menu_items'
-                                );
-                            }
-                        }
-
-                        $sort_order = array();
-
-                        foreach ($contents as $key => $value) {
-                            $sort_order[$key] = $value['sort'];
-                        }
-
-                        array_multisort($sort_order, SORT_ASC, $contents);
-
-                        $block_data_info[$kk]['contents'] = $contents;
+                        $block_cols[$col_id]['block_data'] = $block_data_info;
                     }
 
-                    $block_info['blocks_data'] = $block_data_info;
+                    $block_info['block_cols'] = $block_cols;
                 }
 
                 $menu_items[$menu_item_key]['block'] = $block_info;

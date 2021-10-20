@@ -38,15 +38,15 @@ class ModelExtensionModuleMenuConstructorNik extends Model {
 		) ENGINE=MyISAM DEFAULT COLLATE=utf8_general_ci;");
         $this->db->query("CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "menu_item_block_col` (
             `id` INT(11) NOT NULL AUTO_INCREMENT,
+            `col_id` INT(11) NOT NULL,
             `block_id` INT(11) NOT NULL,
-            `col_width` INT(11) NOT NULL,
+            `col_width` VARCHAR(64) NOT NULL,
             PRIMARY KEY (`id`)
 		) ENGINE=MyISAM DEFAULT COLLATE=utf8_general_ci;");
         $this->db->query("CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "menu_item_block_data` (
             `id` INT(11) NOT NULL AUTO_INCREMENT,
             `block_id` INT(11) NOT NULL,
-            `col_id` INT(11) NOT NULL,
-            `block_grid_width` VARCHAR(20) DEFAULT NULL,
+            `block_col_id` INT(11) NOT NULL,
             `text` TEXT DEFAULT NULL,
             `text_ordinal` INT(11) DEFAULT NULL,
             `products_ordinal` INT(11) DEFAULT NULL,
@@ -241,6 +241,12 @@ class ModelExtensionModuleMenuConstructorNik extends Model {
         return $query->rows;
     }
 
+    public function getMenuItemsByParentId($parent_id) {
+        $query = $this->db->query("SELECT mi.menu_item_id, mid.`name` FROM " . DB_PREFIX . "menu_item mi LEFT JOIN " . DB_PREFIX . "menu_item_description mid ON (mi.menu_item_id = mid.menu_item_id) WHERE mid.language_id = '" . (int)$this->config->get('config_language_id') . "' AND mi.parent_id = '" . (int)$parent_id . "' ORDER BY mid.name ASC");
+
+        return $query->rows;
+    }
+
     public function addBlock($menu_item_id, $grid_id) {
         $this->db->query("INSERT INTO " . DB_PREFIX . "menu_item_block SET `menu_item_id` = '" . (int)$menu_item_id . "', `grid_id` = '" . (int)$grid_id . "'");
 
@@ -277,18 +283,24 @@ class ModelExtensionModuleMenuConstructorNik extends Model {
         return $query->row;
     }
 
-    public function addCol($block_id, $col_width) {
-        $this->db->query("INSERT INTO " . DB_PREFIX . "menu_item_block_col SET `block_id` = '" . (int)$block_id . "', `col_width` = '" . (int)$col_width . "'");
+    public function addBlockCol($col_id, $block_id, $col_width) {
+        $this->db->query("INSERT INTO " . DB_PREFIX . "menu_item_block_col SET `col_id` = '" . (int)$col_id . "', `block_id` = '" . (int)$block_id . "', `col_width` = '" . $this->db->escape($col_width) . "'");
 
-        $col_id = $this->db->getLastId();
+        $block_col_id = $this->db->getLastId();
 
         $this->cache->delete('menu_item_block_col');
 
-        return $col_id;
+        return $block_col_id;
+    }
+
+    public function getBlockCols($block_id) {
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "menu_item_block_col WHERE `block_id` = '" . (int)$block_id . "'");
+
+        return $query->rows;
     }
 
     public function addBlockData($data) {
-        $this->db->query("INSERT INTO " . DB_PREFIX . "menu_item_block_data SET `block_id` = '" . (int)$data['block_id'] . "', `col_id` = '" . (int)$data['col_id'] . "', `block_grid_width` = '" . $this->db->escape($data['block_grid_width']) . "', `text` = '" . $this->db->escape($data['block_data']['text']) . "', `text_ordinal` = '" . (int)$data['block_data']['text_ordinal'] . "', `products_ordinal` = '" . (int)$data['block_data']['products_ordinal'] . "', `menu_items_ordinal` = '" . (int)$data['block_data']['menu_items_ordinal'] . "'");
+        $this->db->query("INSERT INTO " . DB_PREFIX . "menu_item_block_data SET `block_id` = '" . (int)$data['block_id'] . "', `block_col_id` = '" . (int)$data['block_col_id'] . "', `text` = '" . $this->db->escape($data['block_data']['text']) . "', `text_ordinal` = '" . (int)$data['block_data']['text_ordinal'] . "', `products_ordinal` = '" . (int)$data['block_data']['products_ordinal'] . "', `menu_items_ordinal` = '" . (int)$data['block_data']['menu_items_ordinal'] . "'");
 
         $block_data_id = $this->db->getLastId();
 
@@ -341,8 +353,8 @@ class ModelExtensionModuleMenuConstructorNik extends Model {
     }
 
 
-    public function getBlockData($block_id) {
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "menu_item_block_data WHERE `block_id` = '" . (int)$block_id . "'");
+    public function getBlockData($block_col_id) {
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "menu_item_block_data WHERE `block_col_id` = '" . (int)$block_col_id . "'");
 
         $block_data_info = $query->rows;
 

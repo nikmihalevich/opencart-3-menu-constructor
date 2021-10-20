@@ -128,7 +128,8 @@
     padding: 8px;
     display: flex;
     align-items: center;
-    margin: 10px;
+    margin: 10px auto;
+    width: fit-content;
   }
   .block-data-inner span {
     /*margin: 5px 30px;*/
@@ -367,29 +368,10 @@
                 {% if block %}
                   <div class="block-data-row container" id="block-data-row-{{ block.id }}" data-block-id="{{ block.id }}">
                     <div class="block-data-row-inner" style="width: 100%;">
-                      {% if block.grid_id == "1" %}
-                        {% set colCounts = 1 %}
-                      {% elseif block.grid_id == "2" or block.grid_id == "5" or block.grid_id == "6" %}
-                        {% set colCounts = 2 %}
-                      {% elseif block.grid_id == "3" or block.grid_id == "7" or block.grid_id == "8" or block.grid_id == "9" or block.grid_id == "12" %}
-                        {% set colCounts = 3 %}
-                      {% elseif block.grid_id == "4" %}
-                        {% set colCounts = 4 %}
-                      {% elseif block.grid_id == "10" %}
-                        {% set colCounts = 5 %}
-                      {% elseif block.grid_id == "11" %}
-                        {% set colCounts = 6 %}
-                      {% endif %}
-
-                      {% set ignoredCols = [] %}
-
-                      {% for colId in 1..colCounts %}
-                        {% for block_data in block.blocks_data if block_data.col_id == colId %}
-                          {% if loop.first %}
-                            <div class="{{ block_data.block_grid_width }}">
-                          {% endif %}
-                          
-                          <div class="{{ block_data.block_grid_width }} block-data-table w-xs" data-col-id="{{ block_data.col_id }}" style="margin: 0 auto;">
+                      {% for col in block.block_cols %}
+                        <div class="{{ col.col_width }}">
+                        {% for block_data in col.block_data %}
+                          <div class="block-data-table w-xs" data-col-id="{{ col.col_id }}" style="margin: 0 auto;">
                             <div class="w-100" style="display: flex; flex-direction: column; outline: 1px dashed #ccc;">
                               {% for content in block_data.contents %}
                                 {% if content.type == 'text' %}
@@ -428,22 +410,17 @@
                                 <div class="overlay"></div>
                                 <div class="overlay-buttons">
                                   <button type="button" data-toggle="modal" data-target="#addBlockDataModal" data-tooltip="tooltip" title="{{ button_edit }}" data-block-data-id="{{ block_data.id }}" class="btn btn-primary edit-block-data-btn"><i class="fa fa-pencil"></i></button>
-{#                                  <button type="button" data-tooltip="tooltip" title="{{ button_delete }}" data-block-data-id="{{ block_data.id }}" class="btn btn-danger delete-block-data-btn"><i class="fa fa-trash"></i></button>#}
+                                  <button type="button" data-tooltip="tooltip" title="{{ button_delete }}" data-block-data-id="{{ block_data.id }}" class="btn btn-danger delete-block-data-btn"><i class="fa fa-trash"></i></button>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        {% else %}
-                          <div class="block-data-inner">
-                            <button type="button" data-toggle="modal" data-target="#addBlockDataModal" data-tooltip="tooltip" title="{{ button_add }}" data-col-id="{{ colId }}" class="btn btn-success pull-right add-block-data-btn"><i class="fa fa-plus"></i></button>
-                          </div>
-
-
-                          {% if loop.last %}
-                            </div>
-                          {% endif %}
                         {% endfor %}
 
+                          <div class="block-data-inner">
+                            <button type="button" data-toggle="modal" data-target="#addBlockDataModal" data-tooltip="tooltip" title="{{ button_add }}" data-col-id="{{ col.id }}" class="btn btn-success pull-right add-block-data-btn"><i class="fa fa-plus"></i></button>
+                          </div>
+                        </div>
                       {% endfor %}
                     </div>
                     <div class="block-data-buttons">
@@ -605,9 +582,17 @@
                 <h4>{{ text_list_menu_items }}</h4>
                 <div class="col-sm-12">
                   <div class="col-sm-6">
-                    <label class="control-label" for="input-menu-items-list">{{ entry_menu_items_list }}</label>
                     <div class="menu-items-list"> <!-- menu-items-list -->
-                      {% for menu_item in menu_items_list %}
+                      <label class="control-label" for="input-menu-items-list">{{ entry_related_menu_items_list }}</label>
+                      {% for menu_item in child_menu_items_list %}
+                        <div class="menu-item">
+                          <span>{{ menu_item.name }}</span>
+                          <input type="hidden" name="menu_items_id[]" value="{{ menu_item.menu_item_id }}">
+                          <button type="button" class="btn btn-default" data-menu-item-id="{{ menu_item.menu_item_id }}" data-menu-item-name="{{ menu_item.name }}"><i class="fa fa-share"></i></button>
+                        </div>
+                      {% endfor %}
+                      <label class="control-label" for="input-menu-items-list">{{ entry_parents_menu_items_list }}</label>
+                      {% for menu_item in parents_menu_items_list %}
                         <div class="menu-item">
                           <span>{{ menu_item.name }}</span>
                           <input type="hidden" name="menu_items_id[]" value="{{ menu_item.menu_item_id }}">

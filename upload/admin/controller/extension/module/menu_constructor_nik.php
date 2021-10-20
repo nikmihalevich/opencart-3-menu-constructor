@@ -379,73 +379,74 @@ class ControllerExtensionModuleMenuConstructorNik extends Controller {
                 $this->load->model('catalog/product');
                 $this->load->model('tool/image');
 
-                $block_data_info = $this->model_extension_module_menu_constructor_nik->getBlockData($block_info['id']);
+                $block_cols = $this->model_extension_module_menu_constructor_nik->getBlockCols($block_info['id']);
 
-                foreach ($block_data_info as $kk => $block_data) {
-                    $contents = array();
-                    if (!empty($block_data['text'])) {
-                        $contents[] = array(
-                            'value'   => $block_data['text'],
-                            'sort'    => $block_data['text_ordinal'],
-                            'type'    => 'text'
-                        );
-                    }
+                foreach ($block_cols as $col_id => $block_col) {
+                    $block_data_info = $this->model_extension_module_menu_constructor_nik->getBlockData($block_col['id']);
 
-                    if (!empty($block_data['products'])) {
-                        $results = array();
-                        foreach ($block_data['products'] as $product) {
-                            $results[] = $this->model_catalog_product->getProduct($product['product_id']);
+                    foreach ($block_data_info as $kk => $block_data) {
+                        $contents = array();
+                        if (!empty($block_data['text'])) {
+                            $contents[] = array(
+                                'value'   => $block_data['text'],
+                                'sort'    => $block_data['text_ordinal'],
+                                'type'    => 'text'
+                            );
                         }
 
-                        foreach ($results as $kkk => $result) {
-                            $results[$kkk]['price'] = $this->currency->format($result['price'], $this->config->get('config_currency'));
-                            if ($results[$kkk]['image']) {
-                                $results[$kkk]['thumb'] = $this->model_tool_image->resize($result['image'], 133, 133);
-                            } else {
-                                $results[$kkk]['thumb'] = $this->model_tool_image->resize('no_image.png', 133, 133);
+                        if (!empty($block_data['products'])) {
+                            $results = array();
+                            foreach ($block_data['products'] as $product) {
+                                $results[] = $this->model_catalog_product->getProduct($product['product_id']);
+                            }
+
+                            foreach ($results as $kkk => $result) {
+                                $results[$kkk]['price'] = $this->currency->format($result['price'], $this->config->get('config_currency'));
+                                if ($results[$kkk]['image']) {
+                                    $results[$kkk]['thumb'] = $this->model_tool_image->resize($result['image'], 133, 133);
+                                } else {
+                                    $results[$kkk]['thumb'] = $this->model_tool_image->resize('no_image.png', 133, 133);
+                                }
+                            }
+
+                            if (!empty($results)) {
+                                $contents[] = array(
+                                    'value'   => $results,
+                                    'sort'    => $block_data['products_ordinal'],
+                                    'type'    => 'products'
+                                );
                             }
                         }
 
-                        if (!empty($results)) {
-                            $contents[] = array(
-                                'value'   => $results,
-                                'sort'    => $block_data['products_ordinal'],
-                                'type'    => 'products'
-                            );
+                        if (!empty($block_data['menu_items'])) {
+                            $results = array();
+                            foreach ($block_data['menu_items'] as $menu_item) {
+                                $results[] = $this->model_extension_module_menu_constructor_nik->getMenuItemName($menu_item['menu_item_id']);
+                            }
+
+                            if (!empty($results)) {
+                                $contents[] = array(
+                                    'value'   => $results,
+                                    'sort'    => $block_data['menu_items_ordinal'],
+                                    'type'    => 'menu_items'
+                                );
+                            }
                         }
-                    }
 
-                    if (!empty($block_data['menu_items'])) {
-                        $results = array();
-                        foreach ($block_data['menu_items'] as $menu_item) {
-                            $results[] = $this->model_extension_module_menu_constructor_nik->getMenuItemName($menu_item['menu_item_id']);
+                        $sort_order = array();
+
+                        foreach ($contents as $key => $value) {
+                            $sort_order[$key] = $value['sort'];
                         }
 
-                        if (!empty($results)) {
-                            $contents[] = array(
-                                'value'   => $results,
-                                'sort'    => $block_data['menu_items_ordinal'],
-                                'type'    => 'menu_items'
-                            );
-                        }
+                        array_multisort($sort_order, SORT_ASC, $contents);
+
+                        $block_data_info[$kk]['contents'] = $contents;
                     }
-
-                    $sort_order = array();
-
-                    foreach ($contents as $key => $value) {
-                        $sort_order[$key] = $value['sort'];
-                    }
-
-                    array_multisort($sort_order, SORT_ASC, $contents);
-
-                    $block_data_info[$kk]['contents'] = $contents;
+                    $block_cols[$col_id]['block_data'] = $block_data_info;
                 }
 
-                $block_info['blocks_data'] = $block_data_info;
-
-//                echo "<pre>";
-//                print_r($block_info);
-//                echo "</pre>";
+                $block_info['block_cols'] = $block_cols;
             }
 
             $data['block'] = $block_info;
@@ -513,17 +514,20 @@ class ControllerExtensionModuleMenuConstructorNik extends Controller {
             );
         }
 
-        $data['menu_items_list'] = array();
-
-        $data['menu_items_list'] = $this->model_extension_module_menu_constructor_nik->getMenuItems();
+        $data['child_menu_items_list'] = array();
+        $data['parents_menu_items_list'] = array();
+        $data['parents_menu_items_list'] = $this->model_extension_module_menu_constructor_nik->getMenuItemsParents();
 
         if (isset($this->request->get['menu_item_id'])) {
-            foreach ($data['menu_items_list'] as $key => $menu_item) {
+            $data['child_menu_items_list'] = $this->model_extension_module_menu_constructor_nik->getMenuItemsByParentId($this->request->get['menu_item_id']);
+
+            foreach ($data['parents_menu_items_list'] as $key => $menu_item) {
                 if ($menu_item['menu_item_id'] == $this->request->get['menu_item_id']) {
-                    unset($data['menu_items_list'][$key]);
+                    unset($data['parents_menu_items_list'][$key]);
                 }
             }
         }
+
 
         $this->load->model('tool/image');
         $data['img_placeholder'] = $this->model_tool_image->resize('no_image.png', 40, 40);
@@ -540,7 +544,7 @@ class ControllerExtensionModuleMenuConstructorNik extends Controller {
         if(isset($this->request->get['menu_item_id']) && isset($this->request->get['grid_id']) && $this->request->server['REQUEST_METHOD'] == 'POST') {
             $this->load->model('extension/module/menu_constructor_nik');
             $block_id = $this->model_extension_module_menu_constructor_nik->addBlock($this->request->get['menu_item_id'], $this->request->get['grid_id']);
-            $col_id = $this->model_extension_module_menu_constructor_nik->addCol($block_id, $this->request->get['grid_id']);
+            $this->createCols($block_id, $this->request->get['grid_id']);
             $this->response->addHeader('Content-Type: application/json');
             $this->response->setOutput(json_encode($block_id));
         }
@@ -554,13 +558,79 @@ class ControllerExtensionModuleMenuConstructorNik extends Controller {
         }
     }
 
+    protected function createCols($block_id, $grid_id) {
+        switch ($grid_id) {
+            case '1':
+                $this->model_extension_module_menu_constructor_nik->addBlockCol(1, $block_id, 'w-100');
+                break;
+            case '2':
+                for ($i = 0; $i < 2; $i++) {
+                    $this->model_extension_module_menu_constructor_nik->addBlockCol($i+1, $block_id, 'w-50');
+                }
+                break;
+            case '3':
+                for ($i = 0; $i < 3; $i++) {
+                    $this->model_extension_module_menu_constructor_nik->addBlockCol($i+1, $block_id, 'w-33');
+                }
+                break;
+            case '4':
+                for ($i = 0; $i < 4; $i++) {
+                    $this->model_extension_module_menu_constructor_nik->addBlockCol($i+1, $block_id, 'w-25');
+                }
+                break;
+            case '5':
+                $this->model_extension_module_menu_constructor_nik->addBlockCol(1, $block_id, 'w-33');
+                $this->model_extension_module_menu_constructor_nik->addBlockCol(2, $block_id, 'w-66');
+                break;
+            case '6':
+                $this->model_extension_module_menu_constructor_nik->addBlockCol(1, $block_id, 'w-66');
+                $this->model_extension_module_menu_constructor_nik->addBlockCol(2, $block_id, 'w-33');
+                break;
+            case '7':
+                for ($i = 0; $i < 2; $i++) {
+                    $this->model_extension_module_menu_constructor_nik->addBlockCol($i+1, $block_id, 'w-25');
+                }
+                $this->model_extension_module_menu_constructor_nik->addBlockCol(3, $block_id, 'w-50');
+                break;
+            case '8':
+                $this->model_extension_module_menu_constructor_nik->addBlockCol(1, $block_id, 'w-50');
+                for ($i = 1; $i < 3; $i++) {
+                    $this->model_extension_module_menu_constructor_nik->addBlockCol($i+1, $block_id, 'w-25');
+                }
+                break;
+            case '9':
+                $this->model_extension_module_menu_constructor_nik->addBlockCol(1, $block_id, 'w-25');
+                $this->model_extension_module_menu_constructor_nik->addBlockCol(2, $block_id, 'w-50');
+                $this->model_extension_module_menu_constructor_nik->addBlockCol(3, $block_id, 'w-25');
+                break;
+            case '10':
+                for ($i = 0; $i < 5; $i++) {
+                    $this->model_extension_module_menu_constructor_nik->addBlockCol($i+1, $block_id, 'w-20');
+                }
+                break;
+            case '11':
+                for ($i = 0; $i < 6; $i++) {
+                    $this->model_extension_module_menu_constructor_nik->addBlockCol($i+1, $block_id, 'w-16');
+                }
+                break;
+            case '12':
+                $this->model_extension_module_menu_constructor_nik->addBlockCol(1, $block_id, 'w-16');
+                $this->model_extension_module_menu_constructor_nik->addBlockCol(2, $block_id, 'w-66');
+                $this->model_extension_module_menu_constructor_nik->addBlockCol(3, $block_id, 'w-16');
+                break;
+
+            default:
+                break;
+        }
+    }
+
     public function addBlockData() {
         if(isset($this->request->get['block_id']) && isset($this->request->get['col_id']) && $this->request->server['REQUEST_METHOD'] == 'POST') {
             $this->load->model('extension/module/menu_constructor_nik');
             // end this
             $formData = $_POST;
             $formData['block_id'] = $this->request->get['block_id'];
-            $formData['col_id'] = $this->request->get['col_id'];
+            $formData['block_col_id'] = $this->request->get['col_id'];
             $block = $this->model_extension_module_menu_constructor_nik->getBlockById($this->request->get['block_id']);
             $block_grid_width = '';
             switch ($block['grid_id']) {

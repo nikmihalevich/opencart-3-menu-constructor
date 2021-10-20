@@ -311,65 +311,52 @@
             <div class="menu-constructor-nik-item-block">
 
               <div style="max-width: 1170px; margin: 0 auto; display: flex; justify-content: center; flex-wrap: wrap;">
-                {% if menu_item.block.grid_id == "1" %}
-                  {% set colCounts = 1 %}
-                {% elseif menu_item.block.grid_id == "2" or menu_item.block.grid_id == "5" or menu_item.block.grid_id == "6" %}
-                  {% set colCounts = 2 %}
-                {% elseif menu_item.block.grid_id == "3" or menu_item.block.grid_id == "7" or menu_item.block.grid_id == "8" or menu_item.block.grid_id == "9" or menu_item.block.grid_id == "12" %}
-                  {% set colCounts = 3 %}
-                {% elseif menu_item.block.grid_id == "4" %}
-                  {% set colCounts = 4 %}
-                {% elseif menu_item.block.grid_id == "10" %}
-                  {% set colCounts = 5 %}
-                {% elseif menu_item.block.grid_id == "11" %}
-                  {% set colCounts = 6 %}
-                {% endif %}
 
-                {% set ignoredCols = [] %}
+                {% for col in menu_item.block.block_cols %}
+                  <div class="{{ col.col_width }}">
 
-                {% for colId in 1..colCounts %}
-                  {% for block_data in menu_item.block.blocks_data if block_data.col_id == colId %}
+                    {% for block_data in col.block_data %}
 
-                    <div class="{{ block_data.block_grid_width }}" style="margin: 0 auto;">
-                      <div class="w-100" style="display: flex; flex-direction: column;">
-                        {% for content in block_data.contents %}
-                          {% if content.type == 'text' %}
-                            <div class="menu-constructor-nik-item-block-text">
-                              {{ content.value }}
-                            </div>
-                          {% elseif content.type == 'products' %}
-                            <div> <!-- style="margin: 0 auto;" -->
-                              {% for product in content.value %}
+                      <div style="margin: 0 auto;">
+                        <div class="w-100" style="display: flex; flex-direction: column;">
+                          {% for content in block_data.contents %}
+                            {% if content.type == 'text' %}
+                              <div class="menu-constructor-nik-item-block-text">
+                                {{ content.value }}
+                              </div>
+                            {% elseif content.type == 'products' %}
+                              <div> <!-- style="margin: 0 auto;" -->
+                                {% for product in content.value %}
 
-                                <a href="{{ product.href }}" class="product-layout product-list col-sm-3 col-xs-12" style="margin: 0 7px 0 0px; padding: 10px 0; width: fit-content; display: block;">
-                                  <div class="added-product-image" style="background-color: #f5f5f5; padding: 44px 19px; width: fit-content; margin: 0px 0px 18px;">
-                                    <img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" />
-                                  </div>
-                                  <div class="caption" style="margin-top: 7px; text-align: left;">
-                                    <p style="color: black; font-weight: bold;">{{ product.model }}</p>
-                                    <p style="color: black; margin: 10px 0px;">{{ product.name }}</p>
-                                    <p class="price" style="display: inline-block; color: #000; font-weight: bold; letter-spacing: -.2px;">{{ product.price }}</p>
-                                  </div>
-                                </a>
+                                  <a href="{{ product.href }}" class="product-layout product-list col-sm-3 col-xs-12" style="margin: 0 7px 0 0px; padding: 10px 0; width: fit-content; display: block;">
+                                    <div class="added-product-image" style="background-color: #f5f5f5; padding: 44px 19px; width: fit-content; margin: 0px 0px 18px;">
+                                      <img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" />
+                                    </div>
+                                    <div class="caption" style="margin-top: 7px; text-align: left;">
+                                      <p style="color: black; font-weight: bold;">{{ product.model }}</p>
+                                      <p style="color: black; margin: 10px 0px;">{{ product.name }}</p>
+                                      <p class="price" style="display: inline-block; color: #000; font-weight: bold; letter-spacing: -.2px;">{{ product.price }}</p>
+                                    </div>
+                                  </a>
 
-                              {% endfor %}
-                            </div>
-                          {% elseif content.type == 'menu_items' %}
-                            <div>
-                              {% for menu_item in content.value %}
-                                <a href="{{ menu_item.link }}" style="color: black; margin-top: 18px; display: block;">
-                                  {{ menu_item.name }}
-                                </a>
-                              {% endfor %}
-                            </div>
-                          {% endif %}
-                        {% endfor %}
+                                {% endfor %}
+                              </div>
+                            {% elseif content.type == 'menu_items' %}
+                              <div>
+                                {% for menu_item in content.value %}
+                                  <a href="{{ menu_item.link }}" style="color: black; margin-top: 18px; display: block;">
+                                    {{ menu_item.name }}
+                                  </a>
+                                {% endfor %}
+                              </div>
+                            {% endif %}
+                          {% endfor %}
 
+                        </div>
                       </div>
-                    </div>
 
-                  {% endfor %}
-
+                    {% endfor %}
+                  </div>
                 {% endfor %}
               </div>
 
@@ -419,39 +406,42 @@
                     {% if menu_item.block %}
                         <ul class="mobile-menu-constructor-nik-item-submenu" style="display: none;">
                             <div class="mobile-menu-constructor-nik-item-submenu-inner">
-                                {% for block_data in menu_item.block.blocks_data %}
+                                {% for col in menu_item.block.block_cols %}
+                                    {% for block_data in col.block_data %}
 
-                                    {% for content in block_data.contents %}
-                                        {% if content.type == 'text' %}
-                                            <li class="mobile-menu-constructor-nik-item-submenu-item">
-                                                <div class="mobile-menu-constructor-nik-item-submenu-item-text">
-                                                    {{ content.value }}
-                                                </div>
-                                            </li>
-                                        {% elseif content.type == 'products' %}
-                                            {% for product in content.value %}
-                                                <a href="{{ product.href }}" class="" style="margin: 0 7px 0 0px; width: fit-content; display: block;">
-                                                    <div class="" style="background-color: #f5f5f5; padding: 44px 19px; width: fit-content; margin: 0px 0px 18px;">
-                                                        <img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" />
+                                        {% for content in block_data.contents %}
+                                            {% if content.type == 'text' %}
+                                                <li class="mobile-menu-constructor-nik-item-submenu-item">
+                                                    <div class="mobile-menu-constructor-nik-item-submenu-item-text">
+                                                        {{ content.value }}
                                                     </div>
-                                                    <div class="caption" style="margin-top: 7px; text-align: left;">
-                                                        <p style="color: black; font-weight: bold;">{{ product.model }}</p>
-                                                        <p style="color: black; margin: 10px 0px;">{{ product.name }}</p>
-                                                        <p class="price" style="display: inline-block; color: #000; font-weight: bold; letter-spacing: -.2px;">{{ product.price }}</p>
-                                                    </div>
-                                                </a>
-                                            {% endfor %}
-                                        {% elseif content.type == 'menu_items' %}
-                                          <li class="mobile-menu-constructor-nik-item-submenu-item">
-                                              <ul>
-                                                  {% for menu_item in content.value %}
-                                                    <li>
-                                                        <a href="{{ menu_item.link }}">{{ menu_item.name }}</a>
-                                                    </li>
-                                                  {% endfor %}
-                                              </ul>
-                                          </li>
-                                        {% endif %}
+                                                </li>
+                                            {% elseif content.type == 'products' %}
+                                                {% for product in content.value %}
+                                                    <a href="{{ product.href }}" class="" style="margin: 0 7px 0 0px; width: fit-content; display: block;">
+                                                        <div class="" style="background-color: #f5f5f5; padding: 44px 19px; width: fit-content; margin: 0px 0px 18px;">
+                                                            <img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" />
+                                                        </div>
+                                                        <div class="caption" style="margin-top: 7px; text-align: left;">
+                                                            <p style="color: black; font-weight: bold;">{{ product.model }}</p>
+                                                            <p style="color: black; margin: 10px 0px;">{{ product.name }}</p>
+                                                            <p class="price" style="display: inline-block; color: #000; font-weight: bold; letter-spacing: -.2px;">{{ product.price }}</p>
+                                                        </div>
+                                                    </a>
+                                                {% endfor %}
+                                            {% elseif content.type == 'menu_items' %}
+                                              <li class="mobile-menu-constructor-nik-item-submenu-item">
+                                                  <ul>
+                                                      {% for menu_item in content.value %}
+                                                        <li>
+                                                            <a href="{{ menu_item.link }}">{{ menu_item.name }}</a>
+                                                        </li>
+                                                      {% endfor %}
+                                                  </ul>
+                                              </li>
+                                            {% endif %}
+                                        {% endfor %}
+
                                     {% endfor %}
 
                                 {% endfor %}

@@ -35,7 +35,8 @@ $_['entry_products']        = 'Товары';
 $_['entry_added_products']  = 'Добавленые товары';
 $_['entry_list_products_categories'] = 'Список категорий товаров';
 $_['entry_text'] = 'Текст';
-$_['entry_menu_items_list'] = 'Не добавленные пункты меню';
+$_['entry_related_menu_items_list'] = 'Привязанные пункты меню';
+$_['entry_parents_menu_items_list'] = 'Родительские пункты меню';
 $_['entry_added_menu_items_list'] = 'Добавленные пункты меню';
 
 // Column

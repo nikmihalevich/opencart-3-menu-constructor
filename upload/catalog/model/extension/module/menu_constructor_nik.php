@@ -18,8 +18,8 @@ class ModelExtensionModuleMenuConstructorNik extends Model {
         return $query->row;
     }
 
-    public function getBlockData($block_id) {
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "menu_item_block_data WHERE `block_id` = '" . (int)$block_id . "'");
+    public function getBlockData($block_col_id) {
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "menu_item_block_data WHERE `block_col_id` = '" . (int)$block_col_id . "'");
 
         $block_data_info = $query->rows;
 
@@ -40,5 +40,11 @@ class ModelExtensionModuleMenuConstructorNik extends Model {
         $query = $this->db->query("SELECT `menu_item_id`, `name` FROM " . DB_PREFIX . "menu_item_description WHERE `menu_item_id` = '" . (int)$menu_item_id . "' AND language_id = '" . (int)$this->config->get('config_language_id') ."'");
 
         return $query->row;
+    }
+
+    public function getBlockCols($block_id) {
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "menu_item_block_col WHERE `block_id` = '" . (int)$block_id . "'");
+
+        return $query->rows;
     }
 }
