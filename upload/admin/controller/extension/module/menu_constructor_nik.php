@@ -63,6 +63,7 @@ class ControllerExtensionModuleMenuConstructorNik extends Controller {
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateMenuItemForm()) {
             $this->model_extension_module_menu_constructor_nik->editMenuItem($this->request->get['menu_item_id'], $this->request->post);
 
+
             $this->session->data['success'] = $this->language->get('text_success');
 
             $url = '';
@@ -475,6 +476,14 @@ class ControllerExtensionModuleMenuConstructorNik extends Controller {
         }
 
         $data['parents'] = $this->model_extension_module_menu_constructor_nik->getMenuItemsParents();
+
+        if (isset($this->request->get['menu_item_id'])) {
+            foreach ($data['parents'] as $parent_key => $parent) {
+                if ($parent['menu_item_id'] == $this->request->get['menu_item_id']) {
+                    unset($data['parents'][$parent_key]);
+                }
+            }
+        }
 
         if (isset($this->request->post['sort_order'])) {
             $data['sort_order'] = $this->request->post['sort_order'];

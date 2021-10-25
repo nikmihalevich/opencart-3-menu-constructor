@@ -112,6 +112,10 @@ class ModelExtensionModuleMenuConstructorNik extends Model {
         $this->db->query("DELETE FROM " . DB_PREFIX . "menu_item_description WHERE menu_item_id = '" . (int)$menu_item_id . "'");
 
         foreach ($data['menu_constructor_nik_description'] as $language_id => $value) {
+            if (!isset($value['bottom_link_name'])) {
+                $value['bottom_link_name'] = '';
+                $value['bottom_link'] = '';
+            }
             $this->db->query("INSERT INTO " . DB_PREFIX . "menu_item_description SET menu_item_id = '" . (int)$menu_item_id . "', language_id = '" . (int)$language_id . "', `name` = '" . $this->db->escape($value['name']) . "', `link` = '" . $this->db->escape($value['link']) . "', `bottom_link_name` = '" . $this->db->escape($value['bottom_link_name']) . "', `bottom_link` = '" . $this->db->escape($value['bottom_link']) . "'");
         }
 
