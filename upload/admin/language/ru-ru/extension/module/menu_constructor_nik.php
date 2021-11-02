@@ -38,6 +38,7 @@ $_['entry_text'] = 'Текст';
 $_['entry_related_menu_items_list'] = 'Привязанные пункты меню';
 $_['entry_parents_menu_items_list'] = 'Родительские пункты меню';
 $_['entry_added_menu_items_list'] = 'Добавленные пункты меню';
+$_['entry_block_data_sort_ordinal'] = 'Порядок сортировки блока в колонке';
 
 // Column
 $_['column_id']              = 'Id';
@@ -62,7 +63,8 @@ $_['button_product_from_menu_item_block'] = 'Удалить из блока';
 
 // Confirm
 $_['confirm_delete_menu_item'] = 'Вы уверены, что хотите удалить пункт меню?';
-$_['confirm_delete_block'] = 'Вы уверены, что хотите удалить этот блок?';
+$_['confirm_delete_block'] = 'Вы уверены, что хотите удалить все содержимое блока?';
+$_['confirm_delete_block_data'] = 'Вы уверены, что хотите удалить этот блок?';
 
 // Help
 $_['help_products']         = 'Для добавления линейки продуктов в письмо';

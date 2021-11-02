@@ -304,7 +304,7 @@ class ModelExtensionModuleMenuConstructorNik extends Model {
     }
 
     public function addBlockData($data) {
-        $this->db->query("INSERT INTO " . DB_PREFIX . "menu_item_block_data SET `block_id` = '" . (int)$data['block_id'] . "', `block_col_id` = '" . (int)$data['block_col_id'] . "', `text` = '" . $this->db->escape($data['block_data']['text']) . "', `text_ordinal` = '" . (int)$data['block_data']['text_ordinal'] . "', `products_ordinal` = '" . (int)$data['block_data']['products_ordinal'] . "', `menu_items_ordinal` = '" . (int)$data['block_data']['menu_items_ordinal'] . "'");
+        $this->db->query("INSERT INTO " . DB_PREFIX . "menu_item_block_data SET `block_id` = '" . (int)$data['block_id'] . "', `block_col_id` = '" . (int)$data['block_col_id'] . "', `text` = '" . $this->db->escape($data['block_data']['text']) . "', `text_ordinal` = '" . (int)$data['block_data']['text_ordinal'] . "', `products_ordinal` = '" . (int)$data['block_data']['products_ordinal'] . "', `menu_items_ordinal` = '" . (int)$data['block_data']['menu_items_ordinal'] . "', `sort_ordinal` = '" . (int)$data['block_data']['sort_ordinal'] . "'");
 
         $block_data_id = $this->db->getLastId();
 
@@ -327,7 +327,7 @@ class ModelExtensionModuleMenuConstructorNik extends Model {
     }
 
     public function editBlockData($data) {
-        $this->db->query("UPDATE " . DB_PREFIX . "menu_item_block_data SET `text` = '" . $this->db->escape($data['block_data']['text']) . "', `text_ordinal` = '" . (int)$data['block_data']['text_ordinal'] . "', `products_ordinal` = '" . (int)$data['block_data']['products_ordinal'] . "', `menu_items_ordinal` = '" . (int)$data['block_data']['menu_items_ordinal'] . "' WHERE `id` = '" . (int)$data['block_data_id'] . "'");
+        $this->db->query("UPDATE " . DB_PREFIX . "menu_item_block_data SET `text` = '" . $this->db->escape($data['block_data']['text']) . "', `text_ordinal` = '" . (int)$data['block_data']['text_ordinal'] . "', `products_ordinal` = '" . (int)$data['block_data']['products_ordinal'] . "', `menu_items_ordinal` = '" . (int)$data['block_data']['menu_items_ordinal'] . "', `sort_ordinal` = '" . (int)$data['block_data']['sort_ordinal'] . "' WHERE `id` = '" . (int)$data['block_data_id'] . "'");
 
         $this->db->query("DELETE FROM " . DB_PREFIX . "product_to_menu_item_block WHERE `block_data_id` = '" . (int)$data['block_data_id'] . "'");
         if(isset($data['added_products_id'])) {
@@ -358,7 +358,7 @@ class ModelExtensionModuleMenuConstructorNik extends Model {
 
 
     public function getBlockData($block_col_id) {
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "menu_item_block_data WHERE `block_col_id` = '" . (int)$block_col_id . "'");
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "menu_item_block_data WHERE `block_col_id` = '" . (int)$block_col_id . "' ORDER BY `sort_ordinal`, `id`");
 
         $block_data_info = $query->rows;
 

@@ -537,6 +537,7 @@
             <li class="active"><a href="#tab-text-data" data-toggle="tab">{{ tab_text_data }}</a></li>
             <li><a href="#tab-products" data-toggle="tab">{{ tab_products }}</a></li>
             <li><a href="#tab-menu-items" data-toggle="tab">{{ tab_menu_items }}</a></li>
+            <li class="pull-right"><a href="#tab-block-settings" data-toggle="tab">{{ tab_block_settings }}</a></li>
           </ul>
           <div class="tab-content">
             <div class="tab-pane active" id="tab-text-data">
@@ -611,6 +612,14 @@
                 <div class="col-sm-12 mt-10">
                   <label class="control-label" for="input-menu-items-ordinal">{{ entry_position_data_in_block }}</label>
                   <input type="text" name="block_data[menu_items_ordinal]" value="" placeholder="{{ entry_position_data_in_block }}" id="input-menu-items-ordinal" class="form-control"/>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane" id="tab-block-settings">
+              <div class="form-group">
+                <label class="col-sm-12 control-label" for="input-block-data-sort-ordinal">{{ entry_block_data_sort_ordinal }}</label>
+                <div class="col-sm-12">
+                  <input type="text" name="block_data[sort_ordinal]" value="" placeholder="{{ entry_block_data_sort_ordinal }}" id="input-block-data-sort-ordinal" class="form-control"/>
                 </div>
               </div>
             </div>
@@ -691,6 +700,8 @@
                   for (let i = 0; i < keys.length; i++) {
                       if(response[keys[i]] !== '0') {
                           $(":input[name='block_data[" + keys[i] + "]']").val(response[keys[i]])
+                      } else {
+                        $(":input[name='block_data[" + keys[i] + "]']").val('')
                       }
                       $('#input-block-data-text').summernote("code", response['text']);
                       if(response['bg_image']) {
@@ -745,6 +756,25 @@
                   '</div>'
           }
           return html;
+      }
+
+      deleteBlockData()
+      function deleteBlockData() {
+        $('.delete-block-data-btn').unbind('click');
+        $('.delete-block-data-btn').on('click', function () {
+          let block_data_id = $(this).attr('data-block-data-id')
+          let blockDataTable = $(this).parents('.block-data-table');
+          let col_id = blockDataTable.attr('data-col-id')
+          if (confirm("{{ confirm_delete_block_data }}")) {
+            $.ajax({
+              type: "POST",
+              url: 'index.php?route=extension/module/menu_constructor_nik/deleteBlockData&block_data_id=' + block_data_id + '&user_token={{ user_token }}',
+              success: function() {
+                document.location.href = window.location;
+              }
+            })
+          }
+        })
       }
 
       // Save block data
