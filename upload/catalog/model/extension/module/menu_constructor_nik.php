@@ -19,7 +19,7 @@ class ModelExtensionModuleMenuConstructorNik extends Model {
     }
 
     public function getBlockData($block_col_id) {
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "menu_item_block_data WHERE `block_col_id` = '" . (int)$block_col_id . "'");
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "menu_item_block_data WHERE `block_col_id` = '" . (int)$block_col_id . "' ORDER BY `sort_ordinal`, `id`");
 
         $block_data_info = $query->rows;
 

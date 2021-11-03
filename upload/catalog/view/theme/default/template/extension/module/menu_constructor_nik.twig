@@ -47,6 +47,10 @@
     line-height: 12px;
     font-size: 14px;
   }
+  .menu-constructor-nik-item-block-text {
+    margin-top: 10px;
+    line-height: 14px;
+  }
   .menu-constructor-nik-item-block-text img {
     max-width: 100%;
   }
@@ -418,7 +422,8 @@
                                                 </li>
                                             {% elseif content.type == 'products' %}
                                                 {% for product in content.value %}
-                                                    <a href="{{ product.href }}" class="" style="margin: 0 7px 0 0px; width: fit-content; display: block;">
+                                                  <li class="mobile-menu-constructor-nik-item-submenu-item">
+                                                    <a href="{{ product.href }}" class=""> <!-- style="margin: 0 7px 0 0px; width: fit-content; display: block;" -->
                                                         <div class="" style="background-color: #f5f5f5; padding: 44px 19px; width: fit-content; margin: 0px 0px 18px;">
                                                             <img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" />
                                                         </div>
@@ -428,6 +433,7 @@
                                                             <p class="price" style="display: inline-block; color: #000; font-weight: bold; letter-spacing: -.2px;">{{ product.price }}</p>
                                                         </div>
                                                     </a>
+                                                  </li>
                                                 {% endfor %}
                                             {% elseif content.type == 'menu_items' %}
                                               <li class="mobile-menu-constructor-nik-item-submenu-item">
